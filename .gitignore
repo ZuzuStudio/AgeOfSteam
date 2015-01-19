@@ -1,0 +1,9 @@
+
+*.user
+*.obj
+*.exe
+*.[oa]
+*.so
+*.dll
+*[Dd]ebug*/
+*[Rr]elease*/
