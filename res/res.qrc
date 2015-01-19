@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>hillFlatLod1_res.svg</file>
+        <file>hillFlatLod2_res.svg</file>
+        <file>hillFlatLod3_res.svg</file>
+        <file>landFlatLod1_res.svg</file>
+        <file>seeFlatLod1_res.svg</file>
+    </qresource>
+</RCC>

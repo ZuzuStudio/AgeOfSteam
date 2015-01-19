@@ -20,3 +20,6 @@ SOURCES += \
 
 HEADERS += \
         include/mainwindow.h
+
+RESOURCES += \
+    res/res.qrc
