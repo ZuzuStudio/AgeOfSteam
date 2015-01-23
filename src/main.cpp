@@ -1,11 +1,20 @@
-#include "../include/mainwindow.h"
+/**********************
+TODO: license here
+***********************/
+
 #include <QApplication>
+#include <QString>
+#ifndef QT_NO_OPENGL
+#include <QGLFormat>
+#endif
 
-int main(int argc, char *argv[])
+#include "mapwidget.h"
+
+int main(int argc, char **argv)
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-
-    return a.exec();
+    QApplication app(argc, argv);
+    MapWidget window;
+    window.setScale(1);
+    window.show();
+    return app.exec();
 }
