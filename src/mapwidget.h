@@ -23,8 +23,6 @@ class MapWidget : public QWidget
         void paintEvent(QPaintEvent *event);
         void keyPressEvent(QKeyEvent *event);
         virtual bool event(QEvent *event);
-        virtual void mousePressEvent(QMouseEvent *event);
-        //virtual void mouseMoveEvent(QMouseEvent *event);
 
     private:
         //---scale factor nessesor for map clasters
@@ -33,6 +31,7 @@ class MapWidget : public QWidget
 
         //---translating around point
         QPoint origin;
+        QPoint d_origin;
         QSize pivotPoint;
 
         QSvgRenderer *renderer;

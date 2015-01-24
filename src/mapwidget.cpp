@@ -6,8 +6,9 @@
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
+    origin(0, 0),
     pivotPoint(sqrt(3.0) * scaleFactor / 2.0 + sqrt(3.0) * scaleFactor / 4.0, scaleFactor),
-    renderer(0),
+    renderer(nullptr),
     image(nullptr),
     scale(scaleFactor),
     painters(0)
@@ -104,11 +105,6 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MapWidget::mousePressEvent(QMouseEvent *event)
-{
-    origin = event->pos();
-}
-
 /**
  * IOS & Android compability
 */
@@ -116,15 +112,31 @@ bool MapWidget::event(QEvent *event)
 {
     switch (event->type())
     {
+    case QEvent::MouseButtonPress:
+    {
+        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
+        d_origin = current_event->pos();
+    }
     case QEvent::MouseMove:
     {
         QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
-        origin.setX(current_event->pos().rx());
-        origin.setY(current_event->pos().ry());
+
+        origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
+        origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
+        d_origin = current_event->pos();
         update();
         return true;
     }
     case QEvent::TouchBegin:
+    {
+        QTouchEvent * touchEvent = static_cast<QTouchEvent *>(event);
+        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
+        if(touchPoints.count() == 1)
+        {
+            QTouchEvent::TouchPoint &point = touchPoints.first();
+            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
+        }
+    }
     case QEvent::TouchUpdate:
     {
         QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
@@ -132,8 +144,9 @@ bool MapWidget::event(QEvent *event)
         if(touchPoints.count() == 1)
         {
             const QTouchEvent::TouchPoint &point = touchPoints.first();
-            origin.setX(point.pos().rx() - point.startPos().rx());
-            origin.setY(point.pos().ry() - point.startPos().ry());
+            origin.setX(origin.rx() + (point.pos().rx() - d_origin.rx()) );
+            origin.setY(origin.ry() + (point.pos().ry() - d_origin.ry()) );
+            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
             update();
         }
         else if(touchPoints.count() == 2)
