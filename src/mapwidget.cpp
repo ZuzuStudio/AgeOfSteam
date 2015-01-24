@@ -24,7 +24,7 @@ MapWidget::MapWidget(QWidget *parent) :
     for (int k = 0; k < numberOfClasters; ++k)
     {
         QImage currentImage(currentSize, QImage::Format_ARGB32_Premultiplied);
-        QPainter *imagePainter = new QPainter(&currentImage);
+        QPainter * imagePainter = new QPainter(&currentImage);
 
         for (int j = 0; j < 15; ++j)
         {
@@ -38,6 +38,7 @@ MapWidget::MapWidget(QWidget *parent) :
         painters.push_back(currentImage);
         delete imagePainter;
     }
+    origin = QPoint(size().width() / 2, size().height() / 2);
 }
 
 MapWidget::~MapWidget()
@@ -48,16 +49,16 @@ MapWidget::~MapWidget()
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
+    QPainter p(this);
+    //p.translate(origin);
     int counter = 1;
     int width = 0;
     int height = 0;
-    QPainter p(this);
-    p.scale(scale, scale);
-    p.translate(origin);
 
-    if (scale < 0.3) // full map rastr
+    if (scale < 0.35) // full map rastr
     {
-        p.drawImage(width, height, painters.at(0));
+        p.scale(scale, scale);
+        p.drawImage(-pivotPoint.width() * 0.5, - pivotPoint.height() * 0.5, painters.at(0));
 
         while (counter < numberOfClasters)
         {
@@ -66,14 +67,22 @@ void MapWidget::paintEvent(QPaintEvent *event)
             if (counter % 10 != 0)
             {
                 width += previous.size().width();
-                p.drawImage(width - pivotPoint.width() * (counter % 10),
-                            height - pivotPoint.height() * 2.5 * (height / previous.size().height()), painters.at(counter));
+                if(height == 0)
+                {
+                    p.drawImage(width -pivotPoint.width() * 0.5 - pivotPoint.width() * (counter % 10),
+                                - pivotPoint.height() * 0.5, painters.at(counter));
+                }
+                else
+                {
+                    p.drawImage(width -pivotPoint.width() * 0.5 - pivotPoint.width() * (counter % 10),
+                                height - pivotPoint.height() * 3 * (height / previous.size().height()), painters.at(counter));
+                }
             }
             else
             {
                 height += previous.size().height();
                 width = 0;
-                p.drawImage(0, height - pivotPoint.height() * 2.5 * (height / previous.size().height()), painters.at(counter));
+                p.drawImage(-pivotPoint.width() * 0.5, height - pivotPoint.height() * 3 * (height / previous.size().height()), painters.at(counter));
             }
 
             ++counter;
@@ -81,38 +90,30 @@ void MapWidget::paintEvent(QPaintEvent *event)
     }
     else // we need to show svg for low detalised texture
     {
-        for (size_t i = 0; i < painters.size(); ++i)
+        qreal width = 100 * (sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0);
+        qreal height = scale * 75;
+        if (image->size() != this->size())
         {
-            if (image->size() != this->size())
-            {
-                delete image;
-                image = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
-            }
-
-            QPainter imagePainter(image);
-            imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-
-            for (int j = 0; j < 21; ++j)
-                for (int i = 0; i < 18; ++i)
-                    renderer->render(&imagePainter, QRectF(sqrt(3.0) * scale * scaleFactor * i / 2.0 + (j & 1) *
-                                                           sqrt(3.0) * scale * scaleFactor / 4.0 - 1,
-                                                           scale * scaleFactor * 0.75 * j - 1 ,
-                                                           2 + scaleFactor * scale ,
-                                                           2 + scaleFactor * scale));
-
-            imagePainter.end();
-            //-------------//
-            QPainter p(this);
-            p.drawImage(0, 0, *image);
-            /*
-            QPainter imagePainter(&painters.at(i));
-            renderer->render(&imagePainter);
-            imagePainter.end();
-            p.drawImage(0, 0, painters.at(i));*/
+            delete image;
+            image = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
         }
 
-    }
+        QPainter imagePainter(image);
+        imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
+        for (int j = 0; j < static_cast<int>(size().width() / width) + 2; ++j)
+            for (int i = 0; i < static_cast<int>(size().height() / height) + 1; ++i)
+                renderer->render(&imagePainter, QRectF(sqrt(3.0) * scale * scaleFactor * i / 2.0 + (j & 1) *
+                                                       sqrt(3.0) * scale * scaleFactor / 4.0 - 1,
+                                                       scale * scaleFactor * 0.75 * j - 1 ,
+                                                       2 + scaleFactor * scale ,
+                                                       2 + scaleFactor * scale));
 
+        imagePainter.end();
+        //-------------//
+        //p.translate(size().width() / 2, size().height() / 2);
+        p.drawImage(0, 0, *image);
+
+    }
     Q_UNUSED(event);
 }
 

@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QKeyEvent>
+#include <QScrollArea>
 
 class MapWidget : public QWidget
 {
