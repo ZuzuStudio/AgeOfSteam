@@ -4,7 +4,7 @@ LevelOfDetalisation::LevelOfDetalisation(QString fileName, double upperLimit, do
     rendererField(0),
     upperLimitField(upperLimit),
     downLimitField(downLimit)
-{
+{ 
     rendererField = new QSvgRenderer(fileName);
 }
 

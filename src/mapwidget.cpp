@@ -26,19 +26,19 @@ MapWidget::MapWidget(QWidget *parent) :
         QImage currentImage(currentSize, QImage::Format_ARGB32_Premultiplied);
         QPainter * imagePainter = new QPainter(&currentImage);
 
-        for (int j = 0; j < 15; ++j)
+        for (int j = 0; j < 3; ++j)
         {
-            for (int i = 0; i < 15; ++i)
+            for (int i = 0; i < 3; ++i)
             {
+                //qDebug() << "X = " << sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1 << " ; Y = " << scale * 0.75 * j - 1;
                 renderer->render(imagePainter, QRectF(sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1,
-                                                      scale * 0.75 * j - 1 , 2 + scale, 2 + scale));
+                                                      scale * 0.75 * j - 1 , scale, scale));
             }
         }
-
+        //qDebug() << "\n";
         painters.push_back(currentImage);
         delete imagePainter;
     }
-    origin = QPoint(size().width() / 2, size().height() / 2);
 }
 
 MapWidget::~MapWidget()
