@@ -8,7 +8,7 @@ TODO: license here
 #include <QGLFormat>
 #endif
 
-#include "mapwidget.h"
+#include "../include/mapwidget.h"
 
 int main(int argc, char **argv)
 {

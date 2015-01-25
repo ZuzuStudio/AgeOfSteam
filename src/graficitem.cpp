@@ -1,4 +1,4 @@
-#include "graficitem.h"
+#include "../include/graficitem.h"
 
 
 GraficItem::GraficItem(typename QList<LevelOfDetalisation *>::iterator from, typename QList<LevelOfDetalisation *>::iterator to)

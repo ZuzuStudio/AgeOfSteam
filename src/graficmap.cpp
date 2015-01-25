@@ -1,4 +1,4 @@
-#include "graficmap.h"
+#include "../include/graficmap.h"
 
 GraficMap::GraficMap()
 {

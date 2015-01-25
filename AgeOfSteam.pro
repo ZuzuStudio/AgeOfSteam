@@ -4,22 +4,34 @@
 #
 #-------------------------------------------------
 
-CONFIG += c+=11
+CONFIG += c++11
 
-QT       += core gui
+QT     += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg xml
+
+CONFIG += console
+
+qtHaveModule(opengl): QT += opengl
 
 TARGET = AgeOfSteam
 TEMPLATE = app
 
 
 SOURCES += \
-        src/main.cpp \
-        src/mainwindow.cpp
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/graficitem.cpp \
+    src/graficmap.cpp \
+    src/levelofdetalisation.cpp \
+    src/mapwidget.cpp
 
 HEADERS += \
-        include/mainwindow.h
+    include/mainwindow.h \
+    include/graficitem.h \
+    include/graficmap.h \
+    include/levelofdetalisation.h \
+    include/mapwidget.h
 
 RESOURCES += \
     res/res.qrc

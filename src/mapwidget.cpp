@@ -1,4 +1,4 @@
-#include "mapwidget.h"
+#include "../include/mapwidget.h"
 #include <QDebug>
 #include <qmath.h>
 #include <qsvggenerator.h>
@@ -15,7 +15,7 @@ MapWidget::MapWidget(QWidget *parent) :
 {
     QSize currentSize(10 * sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0, 10 * scale);
     image = new QImage(currentSize, QImage::Format_ARGB32_Premultiplied);
-    renderer = new QSvgRenderer(QString(":/files/hillFlatLod1_res.svg"),
+    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
                                 this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
     connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));

@@ -1,4 +1,4 @@
-#include "levelofdetalisation.h"
+#include "../include/levelofdetalisation.h"
 
 LevelOfDetalisation::LevelOfDetalisation(QString fileName, double upperLimit, double downLimit):
     rendererField(0),
