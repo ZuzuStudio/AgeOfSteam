@@ -3,97 +3,45 @@
 #include <qmath.h>
 #include <qsvggenerator.h>
 #include <qfiledialog.h>
-#include "include/hexagonalgrid.h"
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
     origin(0, 0),
-    pivotPoint(sqrt(3.0) * scaleFactor / 2.0 + sqrt(3.0) * scaleFactor / 4.0, scaleFactor),
     renderer(nullptr),
     image(nullptr),
     scale(scaleFactor),
     painters(0)
 {
-    QSize currentSize(100 * sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0, 100 * scale);
-    image = new QImage(currentSize, QImage::Format_ARGB32_Premultiplied);
+    image  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
     renderer = new QSvgRenderer(QString(":/res/Land.svg"),
                                 this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
     connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
     setAttribute(Qt::WA_AcceptTouchEvents);
 
-    HexagonalGrid *HG = new HexagonalGrid(scale);
-    for (int k = 0; k < numberOfClasters; ++k)
-    {
-        QImage currentImage(currentSize, QImage::Format_ARGB32_Premultiplied);
-        QPainter * imagePainter = new QPainter(&currentImage);
-        HG->drawRastr(renderer, imagePainter);
-        /*for (int j = 0; j < 3; ++j)
-        {
-            for (int i = 0; i < 3; ++i)
-            {
-                //qDebug() << "X = " << sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1 << " ; Y = " << scale * 0.75 * j - 1;
-                renderer->render(imagePainter, QRectF(sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1,
-                                                      scale * 0.75 * j - 1 , 2 *scale, scale));
-            }
-        }*/
-        //qDebug() << "\n";
-        painters.push_back(currentImage);
-        delete imagePainter;
-    }
+    HG = new HexagonalGrid(scale);
+    painters = HG->drawRastr(renderer);
 }
 
 MapWidget::~MapWidget()
 {
     delete image;
     image = nullptr;
+    delete HG;
+    HG = nullptr;
 }
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
-    //p.translate(origin);
-    int counter = 1;
-    int width = 0;
-    int height = 0;
 
     if (scale < 0.35) // full map rastr
     {
         p.scale(scale, scale);
-        p.drawImage(-pivotPoint.width() * 0.5, - pivotPoint.height() * 0.5, painters.at(0));
-
-        while (counter < numberOfClasters)
-        {
-            QImage previous = painters.at(counter - 1);
-
-            if (counter % 10 != 0)
-            {
-                width += previous.size().width();
-                if(height == 0)
-                {
-                    p.drawImage(width -pivotPoint.width() * 0.5 - pivotPoint.width() * (counter % 10),
-                                - pivotPoint.height() * 0.5, painters.at(counter));
-                }
-                else
-                {
-                    p.drawImage(width -pivotPoint.width() * 0.5 - pivotPoint.width() * (counter % 10),
-                                height - pivotPoint.height() * 3 * (height / previous.size().height()), painters.at(counter));
-                }
-            }
-            else
-            {
-                height += previous.size().height();
-                width = 0;
-                p.drawImage(-pivotPoint.width() * 0.5, height - pivotPoint.height() * 3 * (height / previous.size().height()), painters.at(counter));
-            }
-
-            ++counter;
-        }
+        HG->gluingTogetherClasters(&p);
     }
     else // we need to show svg for low detalised texture
     {
-        qreal width = 100 * (sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0);
-        qreal height = scale * 75;
         if (image->size() != this->size())
         {
             delete image;
@@ -102,7 +50,9 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
         QPainter imagePainter(image);
         imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-        for (int j = 0; j < static_cast<int>(size().width() / width) + 2; ++j)
+        HG->setScale(scale);
+        HG->drawSVG(renderer, &imagePainter);
+        /*for (int j = 0; j < static_cast<int>(size().width() / width) + 2; ++j)
             for (int i = 0; i < static_cast<int>(size().height() / height) + 1; ++i)
                 renderer->render(&imagePainter, QRectF(sqrt(3.0) * scale * scaleFactor * i / 2.0 + (j & 1) *
                                                        sqrt(3.0) * scale * scaleFactor / 4.0 - 1,
@@ -110,11 +60,9 @@ void MapWidget::paintEvent(QPaintEvent *event)
                                                        2 + scaleFactor * scale ,
                                                        2 + scaleFactor * scale));
 
-        imagePainter.end();
+        imagePainter.end();*/
         //-------------//
-        //p.translate(size().width() / 2, size().height() / 2);
         p.drawImage(0, 0, *image);
-
     }
     Q_UNUSED(event);
 }

@@ -46,20 +46,92 @@ HexagonalGrid::~HexagonalGrid()
     hexagon = nullptr;
 }
 
-void HexagonalGrid::drawRastr(QSvgRenderer * renderer, QPainter *painter)
+std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
 {
     int cornersX[6];
     int cornersY[6];
-    for (size_t j = 0; j < sizeOfClaster; ++j)
+    hexagon->setCellIndex(0, 0);
+    hexagon->computeCorners(cornersX, cornersY);
+    QSize image_size( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) + sizeOfClaster / 2 * (cornersX[1] - cornersX[0]) ,
+                      sizeOfClaster * (cornersY[4] - cornersY[0]));
+    qDebug() << image_size;
+    for(size_t k = 0; k < numberOfClasters; ++k)
     {
-        for (size_t i = 0; i < sizeOfClaster; ++i)
+        QImage image(image_size, QImage::Format_ARGB32_Premultiplied);
+        QPainter *painter = new QPainter(&image);
+
+        for (size_t j = 0; j < sizeOfClaster; ++j)
+        {
+            for (size_t i = 0; i < sizeOfClaster; ++i)
+            {
+                hexagon->setCellIndex(i, j);
+                hexagon->computeCorners(cornersX, cornersY);
+                renderer->render(painter, QRectF(cornersX[5], cornersY[0], cornersX[2] - cornersX[5], cornersY[4] - cornersY[0]));
+            }
+        }
+        delete painter;
+        painters.push_back(image);
+    }
+    return painters;
+}
+
+void HexagonalGrid::gluingTogetherClasters(QPainter *p)
+{
+    size_t counter = 1;
+    int width = 0;
+    int height = 0;
+    p->drawImage(0, 0, painters.at(0));
+
+    int mod = (int)sqrt(numberOfClasters);
+
+    while(counter < numberOfClasters)
+    {
+        if(counter % mod != 0)
+        {
+            width += painters.at(0).size().width();
+            p->drawImage(width - hexagon->getWidth() * 3 / 2 * (counter % mod),
+                         height - hexagon->getHeight() * (height / painters.at(0).size().height()),
+                         painters.at(counter));
+        }
+        else
+        {
+            height += painters.at(0).size().height();
+            width = 0;
+            p->drawImage(width, height - hexagon->getHeight() *
+                        (height / painters.at(0).size().height()), painters.at(counter));
+        }
+        ++counter;
+    }
+}
+
+void HexagonalGrid::setScale(qreal scale)
+{
+    this->scale = scale;
+}
+
+void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
+{
+    int cornersX[6];
+    int cornersY[6];
+    hexagon->setCellIndex(0, 0);
+    hexagon->computeCorners(cornersX, cornersY);
+
+    int totalWidth = 1800;//painter->window().size().width();
+    unsigned width_cells = totalWidth / ( (cornersX[2] - cornersX[5]) * 0.75);
+
+    int totalHeight = 2070;//painter->window().size().height();
+    unsigned height_cells = totalHeight / (cornersY[4] - cornersY[0]);
+    qDebug() << "\n" << totalWidth << " ; " << totalHeight;
+    for (size_t j = 0; j < height_cells; ++j)
+    {
+        for (size_t i = 0; i < width_cells; ++i)
         {
             hexagon->setCellIndex(i, j);
             hexagon->computeCorners(cornersX, cornersY);
-            qDebug() << "( " << cornersX[5] << " - > " << cornersX[2] << " )";
             renderer->render(painter, QRectF(cornersX[5], cornersY[0], cornersX[2] - cornersX[5], cornersY[4] - cornersY[0]));
         }
     }
+    painter->end();
 }
 
 

@@ -9,7 +9,6 @@ TODO: license here
 #endif
 
 #include "../include/mapwidget.h"
-#include "include/hexagonalgrid.h"
 #include <QDebug>
 
 int main(int argc, char **argv)

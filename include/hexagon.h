@@ -27,6 +27,8 @@ public :
     int getIndexJ();
     int getNeighbourI(int neighbourIdx);// horizontal grid for given neighbours
     int getNeighbourJ(int neighbourJdx);// vertical grid coordinate for the given neighbour
+    int getWidth();
+    int getHeight();
 
     //--- starting from the top left corners, computing all the corners
     void computeCorners(int * cornersX, int * cornersY);

@@ -16,8 +16,11 @@ public:
 
     explicit HexagonalGrid(qreal scale);
     ~HexagonalGrid();
-    void drawRastr(QSvgRenderer * renderer, QPainter * painter);
-    QImage drawSVG(QSvgRenderer, QPainter * painter);
+    std::vector<QImage> drawRastr(QSvgRenderer * renderer);
+    void drawSVG(QSvgRenderer * renderer, QPainter * painter);
+    void gluingTogetherClasters(QPainter * painter);
+
+    void setScale(qreal scale);
 
 private:
 
@@ -38,10 +41,10 @@ private:
 
     Hexagon *hexagon;
     qreal scale;
-    std::vector<QImage> painters;
     int **matrix;
+    std::vector<QImage> painters;
 
     const qreal scaleFactor = 120.0;
-    const int numberOfClasters = 5;
+    const size_t numberOfClasters = 9;
     const size_t sizeOfClaster = 10;
 };

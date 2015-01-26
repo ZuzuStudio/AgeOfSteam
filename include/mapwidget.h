@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include <QScrollArea>
+#include <include/hexagonalgrid.h>
 
 class MapWidget : public QWidget
 {
@@ -26,9 +27,11 @@ class MapWidget : public QWidget
         virtual bool event(QEvent *event);
 
     private:
+        HexagonalGrid * HG;
+
         //---scale factor nessesor for map clasters
         const qreal scaleFactor = 120.0;
-        const int numberOfClasters = 1;
+        const int numberOfClasters = 5;
         const int sizeOfClaster = 10;
 
         //---translating around point

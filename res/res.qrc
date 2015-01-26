@@ -6,5 +6,6 @@
         <file>landFlatLod1_res.svg</file>
         <file>seeFlatLod1_res.svg</file>
 	<file>Land.svg</file>
+	<file>hill_(flat_top)_res.svg</file>
     </qresource>
 </RCC>
