@@ -33,7 +33,7 @@ int ** HexagonalGrid::ArrayGrid::createGrid()
 
 HexagonalGrid::HexagonalGrid(qreal scale):grid(nullptr), hexagon(nullptr), scale(scale)
 {
-    hexagon = new Hexagon(scale);
+    hexagon = new Hexagon(100);
     grid = new ArrayGrid(20, 20);
 
 }
@@ -52,9 +52,8 @@ std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
     int cornersY[6];
     hexagon->setCellIndex(0, 0);
     hexagon->computeCorners(cornersX, cornersY);
-    QSize image_size( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) + sizeOfClaster / 2 * (cornersX[1] - cornersX[0]) ,
+    image_size = QSize( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) + sizeOfClaster / 2 * (cornersX[1] - cornersX[0]) ,
                       sizeOfClaster * (cornersY[4] - cornersY[0]));
-    qDebug() << image_size;
     for(size_t k = 0; k < numberOfClasters; ++k)
     {
         QImage image(image_size, QImage::Format_ARGB32_Premultiplied);
@@ -102,6 +101,7 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         }
         ++counter;
     }
+
 }
 
 void HexagonalGrid::setScale(qreal scale)
@@ -113,24 +113,28 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
 {
     int cornersX[6];
     int cornersY[6];
-    hexagon->setCellIndex(0, 0);
-    hexagon->computeCorners(cornersX, cornersY);
+    Hexagon currentHexagon(100 * scale);
+    currentHexagon.setCellIndex(0, 0);
+    currentHexagon.computeCorners(cornersX, cornersY);
 
-    int totalWidth = 1800;//painter->window().size().width();
-    unsigned width_cells = totalWidth / ( (cornersX[2] - cornersX[5]) * 0.75);
+    int totalWidth = image_size.width();
+    unsigned width_cells = totalWidth / ( (cornersX[2] - cornersX[5]) * 0.75) + 2;
 
-    int totalHeight = 2070;//painter->window().size().height();
-    unsigned height_cells = totalHeight / (cornersY[4] - cornersY[0]);
-    qDebug() << "\n" << totalWidth << " ; " << totalHeight;
+    int totalHeight = image_size.height();
+    unsigned height_cells = totalHeight / (cornersY[4] - cornersY[0]) + 2;
     for (size_t j = 0; j < height_cells; ++j)
     {
         for (size_t i = 0; i < width_cells; ++i)
         {
-            hexagon->setCellIndex(i, j);
-            hexagon->computeCorners(cornersX, cornersY);
-            renderer->render(painter, QRectF(cornersX[5], cornersY[0], cornersX[2] - cornersX[5], cornersY[4] - cornersY[0]));
+            currentHexagon.setCellIndex(i, j);
+            currentHexagon.computeCorners(cornersX, cornersY);
+            renderer->render(painter, QRectF(cornersX[5], cornersY[0],
+                    (cornersX[2] - cornersX[5]) + 1, (cornersY[4] - cornersY[0]) + 1));
         }
     }
+
+    currentHexagon.setCellByPoint(100, 100);
+    qDebug() << "Mj = " << currentHexagon.getIndexJ();
     painter->end();
 }
 

@@ -6,7 +6,6 @@
 #include <QImage>
 #include <QPainter>
 #include <QKeyEvent>
-#include <QScrollArea>
 #include <include/hexagonalgrid.h>
 
 class MapWidget : public QWidget
@@ -29,11 +28,6 @@ class MapWidget : public QWidget
     private:
         HexagonalGrid * HG;
 
-        //---scale factor nessesor for map clasters
-        const qreal scaleFactor = 120.0;
-        const int numberOfClasters = 5;
-        const int sizeOfClaster = 10;
-
         //---translating around point
         QPoint origin;
         QPoint d_origin;
@@ -42,7 +36,6 @@ class MapWidget : public QWidget
         QSvgRenderer *renderer;
         QImage *image;
         double scale;
-        std::vector<QImage> painters;
 };
 
 #endif // MAPWIDGET_H

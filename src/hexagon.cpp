@@ -8,9 +8,9 @@ Hexagon::Hexagon(qreal radius):radius(radius), size(radius * 3 / 2)
 {
     width = 2 * radius;
     height = sqrt(3) * radius;
-    int dx[6] = {(int)radius / 2, (int)size, (int)width, (int)size, (int)radius / 2, 0};
+    int dx[6] = {radius / 2, size, width, size, radius / 2, 0};
     std::copy(dx, dx + 6, corners_dx);
-    int dy[6] = {0, 0, (int)height / 2, (int)height, (int)height, (int)height / 2};
+    int dy[6] = {0, 0, height / 2, height, height, height / 2};
     std::copy(dy, dy + 6, corners_dy);
 }
 
