@@ -19,15 +19,5 @@ int main(int argc, char **argv)
     window.setScale(0.2);
     window.show();
 
-    HexagonalGrid hex;
-    QPainter painter;
-    hex.drawRastr(&painter);
-    for(int i = 0; i < 20; ++i)
-    {
-        for(int j = 0; j < 20 ; ++j)
-        {
-            qDebug() << hex.matrix[i][j];
-        }
-    }
     return app.exec();
 }

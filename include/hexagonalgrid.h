@@ -7,35 +7,39 @@
 #include <QSvgRenderer>
 #include <QImage>
 #include <QPainter>
+#include <QDebug>
 
 class HexagonalGrid
 {
 
 public:
-    HexagonalGrid();
-    ~HexagonalGrid();
-    void drawRastr(QPainter * painter);
-    QImage drawSVG(QPainter * painter);
 
-    int **matrix;
+    explicit HexagonalGrid(qreal scale);
+    ~HexagonalGrid();
+    void drawRastr(QSvgRenderer * renderer, QPainter * painter);
+    QImage drawSVG(QSvgRenderer, QPainter * painter);
 
 private:
+
     class ArrayGrid
     {
     private:
         int **array;
-        int rows, colomns;
+        unsigned rows, colomns;
+        const int number_of_hex_corners = 6;
+        const int cell_radius = 40;
 
     public:
-        ArrayGrid(int rows, int colomns);
-        int ** createGrid(std::vector<Hexagon> hexagons);
+        ArrayGrid(unsigned rows, unsigned colomns);
         ~ArrayGrid();
+        int ** createGrid();
+
     }* grid;
-    Hexagon hexagon;
-    QSvgRenderer *renderer;
-    QImage *image;
-    double scale;
+
+    Hexagon *hexagon;
+    qreal scale;
     std::vector<QImage> painters;
+    int **matrix;
 
     const qreal scaleFactor = 120.0;
     const int numberOfClasters = 5;

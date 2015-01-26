@@ -28,7 +28,7 @@ class MapWidget : public QWidget
     private:
         //---scale factor nessesor for map clasters
         const qreal scaleFactor = 120.0;
-        const int numberOfClasters = 4;
+        const int numberOfClasters = 1;
         const int sizeOfClaster = 10;
 
         //---translating around point

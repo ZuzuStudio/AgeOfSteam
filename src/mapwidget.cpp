@@ -3,6 +3,7 @@
 #include <qmath.h>
 #include <qsvggenerator.h>
 #include <qfiledialog.h>
+#include "include/hexagonalgrid.h"
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
@@ -13,28 +14,29 @@ MapWidget::MapWidget(QWidget *parent) :
     scale(scaleFactor),
     painters(0)
 {
-    QSize currentSize(10 * sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0, 10 * scale);
+    QSize currentSize(100 * sqrt(3.0) * scale / 2.0 + sqrt(3.0) * scale / 4.0, 100 * scale);
     image = new QImage(currentSize, QImage::Format_ARGB32_Premultiplied);
-    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
+    renderer = new QSvgRenderer(QString(":/res/Land.svg"),
                                 this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
     connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
     setAttribute(Qt::WA_AcceptTouchEvents);
 
+    HexagonalGrid *HG = new HexagonalGrid(scale);
     for (int k = 0; k < numberOfClasters; ++k)
     {
         QImage currentImage(currentSize, QImage::Format_ARGB32_Premultiplied);
         QPainter * imagePainter = new QPainter(&currentImage);
-
-        for (int j = 0; j < 3; ++j)
+        HG->drawRastr(renderer, imagePainter);
+        /*for (int j = 0; j < 3; ++j)
         {
             for (int i = 0; i < 3; ++i)
             {
                 //qDebug() << "X = " << sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1 << " ; Y = " << scale * 0.75 * j - 1;
                 renderer->render(imagePainter, QRectF(sqrt(3.0) * scale * i / 2.0 + (j & 1) * sqrt(3.0) * scale / 4.0 - 1,
-                                                      scale * 0.75 * j - 1 , scale, scale));
+                                                      scale * 0.75 * j - 1 , 2 *scale, scale));
             }
-        }
+        }*/
         //qDebug() << "\n";
         painters.push_back(currentImage);
         delete imagePainter;
