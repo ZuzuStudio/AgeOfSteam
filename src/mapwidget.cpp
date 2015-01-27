@@ -34,6 +34,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
     if (scale < 0.35) // full map rastr
     {
         p.scale(scale, scale);
+        HG->setScale(scale);
         HG->gluingTogetherClasters(&p);
     }
     else // we need to show svg for low detalised texture

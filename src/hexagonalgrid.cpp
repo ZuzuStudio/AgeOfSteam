@@ -116,12 +116,12 @@ void HexagonalGrid::setScale(qreal scale)
 
 void HexagonalGrid::addShift(int x, int y)
 {
-    shift += QPoint(x,y) ;
+    shift += QPoint(x,y)/scale ;
 }
 
 void HexagonalGrid::addShift(QPoint pos)
 {
-    shift += pos;
+    shift += pos/scale;
 }
 
 void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
