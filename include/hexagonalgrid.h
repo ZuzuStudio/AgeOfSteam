@@ -41,6 +41,7 @@ private:
 
     }* grid;
 
+    QSize image_size;
     Hexagon *hexagon;
     qreal scale;
     int **matrix;
@@ -48,7 +49,7 @@ private:
 
     QPoint shift;
 
-    const qreal scaleFactor = 120.0;
-    const size_t numberOfClasters = 16;
+    const qreal scaleFactor = 120.0;\
+    const size_t numberOfClasters = 25;
     const size_t sizeOfClaster = 10;
 };

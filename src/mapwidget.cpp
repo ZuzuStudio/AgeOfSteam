@@ -1,16 +1,11 @@
 #include "../include/mapwidget.h"
-#include <QDebug>
-#include <qmath.h>
-#include <qsvggenerator.h>
-#include <qfiledialog.h>
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
     origin(0, 0),
     renderer(nullptr),
     image(nullptr),
-    scale(scaleFactor),
-    painters(0)
+    scale(20)
 {
     image  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
     renderer = new QSvgRenderer(QString(":/res/Land.svg"),
@@ -20,7 +15,8 @@ MapWidget::MapWidget(QWidget *parent) :
     setAttribute(Qt::WA_AcceptTouchEvents);
 
     HG = new HexagonalGrid(scale);
-    painters = HG->drawRastr(renderer);
+    HG->drawRastr(renderer);
+
 }
 
 MapWidget::~MapWidget()
@@ -52,15 +48,6 @@ void MapWidget::paintEvent(QPaintEvent *event)
         imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
         HG->setScale(scale);
         HG->drawSVG(renderer, &imagePainter);
-        /*for (int j = 0; j < static_cast<int>(size().width() / width) + 2; ++j)
-            for (int i = 0; i < static_cast<int>(size().height() / height) + 1; ++i)
-                renderer->render(&imagePainter, QRectF(sqrt(3.0) * scale * scaleFactor * i / 2.0 + (j & 1) *
-                                                       sqrt(3.0) * scale * scaleFactor / 4.0 - 1,
-                                                       scale * scaleFactor * 0.75 * j - 1 ,
-                                                       2 + scaleFactor * scale ,
-                                                       2 + scaleFactor * scale));
-
-        imagePainter.end();*/
         //-------------//
         p.drawImage(0, 0, *image);
     }
