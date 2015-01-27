@@ -21,6 +21,8 @@ public:
     void gluingTogetherClasters(QPainter * painter);
 
     void setScale(qreal scale);
+    void addShift(int x, int y);
+    void addShift(QPoint pos);
 
 private:
 
@@ -45,6 +47,9 @@ private:
     int **matrix;
     std::vector<QImage> painters;
 
+    QPoint shift;
+
+    const qreal scaleFactor = 120.0;\
     const size_t numberOfClasters = 25;
     const size_t sizeOfClaster = 10;
 };

@@ -34,6 +34,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
     if (scale < 0.35) // full map rastr
     {
         p.scale(scale, scale);
+        HG->setScale(scale);
         HG->gluingTogetherClasters(&p);
     }
     else // we need to show svg for low detalised texture
@@ -84,15 +85,19 @@ bool MapWidget::event(QEvent *event)
     case QEvent::MouseButtonPress:
     {
         QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
-        d_origin = current_event->pos();
+        //d_origin = current_event->pos();
+        clickPos = current_event->pos();
     }
     case QEvent::MouseMove:
     {
         QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
 
-        origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
-        origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
-        d_origin = current_event->pos();
+        //origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
+        //origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
+        //d_origin = current_event->pos();
+        QPoint current = current_event->pos();
+        HG->addShift(current - clickPos);
+        clickPos = current;
         update();
         return true;
     }
@@ -146,3 +151,4 @@ bool MapWidget::event(QEvent *event)
 
     return QWidget::event(event);
 }
+
