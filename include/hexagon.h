@@ -1,8 +1,6 @@
 #ifndef HEXAGON_H
 #define HEXAGON_H
 
-#endif // HEXAGON_H
-
 #include <QPoint>
 
 class Hexagon
@@ -65,3 +63,5 @@ private:
     qreal width;
 
 };
+
+#endif // HEXAGON_H
