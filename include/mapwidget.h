@@ -26,6 +26,7 @@ class MapWidget : public QWidget
         void keyPressEvent(QKeyEvent *event);
         virtual bool event(QEvent *event);
 
+
     private:
         HexagonalGrid * HG;
 
@@ -38,6 +39,8 @@ class MapWidget : public QWidget
         QPoint origin;
         QPoint d_origin;
         QSize pivotPoint;
+
+        QPoint clickPos;
 
         QSvgRenderer *renderer;
         QImage *image;

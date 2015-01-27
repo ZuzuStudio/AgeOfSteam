@@ -31,7 +31,7 @@ int ** HexagonalGrid::ArrayGrid::createGrid()
     return array;
 }
 
-HexagonalGrid::HexagonalGrid(qreal scale):grid(nullptr), hexagon(nullptr), scale(scale)
+HexagonalGrid::HexagonalGrid(qreal scale):grid(nullptr), hexagon(nullptr), scale(scale), shift(0,0)
 {
     hexagon = new Hexagon(scale);
     grid = new ArrayGrid(20, 20);
@@ -78,27 +78,32 @@ std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
 void HexagonalGrid::gluingTogetherClasters(QPainter *p)
 {
     size_t counter = 1;
-    int width = 0;
-    int height = 0;
-    p->drawImage(0, 0, painters.at(0));
+    int width = shift.x();
+    int height = shift.y();
+    p->drawImage(shift.x(), shift.y(), painters.at(0));
 
     int mod = (int)sqrt(numberOfClasters);
 
+
+    qDebug() << hexagon->getHeight();
     while(counter < numberOfClasters)
     {
         if(counter % mod != 0)
         {
             width += painters.at(0).size().width();
             p->drawImage(width - hexagon->getWidth() * 3 / 2 * (counter % mod),
-                         height - hexagon->getHeight() * (height / painters.at(0).size().height()),
+                         height ,
                          painters.at(counter));
+            qDebug() << height;
         }
         else
         {
-            height += painters.at(0).size().height();
-            width = 0;
-            p->drawImage(width, height - hexagon->getHeight() *
-                        (height / painters.at(0).size().height()), painters.at(counter));
+            height += painters.at(0).size().height()- hexagon->getHeight() ;
+            width = shift.x();
+            p->drawImage(width,
+                         height,
+                         painters.at(counter));
+            qDebug() << height;
         }
         ++counter;
     }
@@ -107,6 +112,16 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
 void HexagonalGrid::setScale(qreal scale)
 {
     this->scale = scale;
+}
+
+void HexagonalGrid::addShift(int x, int y)
+{
+    shift += QPoint(x,y) ;
+}
+
+void HexagonalGrid::addShift(QPoint pos)
+{
+    shift += pos;
 }
 
 void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
