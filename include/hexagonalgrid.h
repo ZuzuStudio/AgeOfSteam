@@ -48,8 +48,9 @@ private:
     std::vector<QImage> painters;
 
     QPoint shift;
+    QPoint total_size;
 
     const qreal scaleFactor = 120.0;\
-    const size_t numberOfClasters = 25;
+    const size_t numberOfClasters = 4;
     const size_t sizeOfClaster = 10;
 };

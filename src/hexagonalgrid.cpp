@@ -83,8 +83,6 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
 
     int mod = (int)sqrt(numberOfClasters);
 
-
-    qDebug() << hexagon->getHeight();
     while(counter < numberOfClasters)
     {
         if(counter % mod != 0)
@@ -93,7 +91,6 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
             p->drawImage(width - hexagon->getWidth() * 3 / 2 * (counter % mod),
                          height ,
                          painters.at(counter));
-            qDebug() << height;
         }
         else
         {
@@ -102,7 +99,6 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
             p->drawImage(width,
                          height,
                          painters.at(counter));
-            qDebug() << height;
         }
         ++counter;
     }
@@ -147,9 +143,10 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
                     (cornersX[2] - cornersX[5]) + 1, (cornersY[4] - cornersY[0]) + 1));
         }
     }
-
-    currentHexagon.setCellByPoint(100, 100);
-    qDebug() << "Mj = " << currentHexagon.getIndexJ();
+    qreal x_coef = totalWidth / painter->window().size().width();
+    qreal y_coef = totalHeight / painter->window().size().height();
+    currentHexagon.setCellByPoint( - shift.x() / x_coef + painter->window().bottomRight().x(), - shift.y() / y_coef + painter->window().bottomRight().y());
+    qDebug() << "Mi = " << currentHexagon.getIndexI() << "\tMj = " << currentHexagon.getIndexJ();
     painter->end();
 }
 
