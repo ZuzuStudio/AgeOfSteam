@@ -52,12 +52,14 @@ std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
     int cornersY[6];
     hexagon->setCellIndex(0, 0);
     hexagon->computeCorners(cornersX, cornersY);
-    image_size = QSize( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) + sizeOfClaster / 2 * (cornersX[1] - cornersX[0]) ,
-                      sizeOfClaster * (cornersY[4] - cornersY[0]));
+    image_size = QSize( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) +
+                        (sizeOfClaster / 2  + (sizeOfClaster % 2 == 0 ? 0.5 : 0)) * (cornersX[1] - cornersX[0]),
+                         (sizeOfClaster + 0.5) * (cornersY[4] - cornersY[0]) );
     for(size_t k = 0; k < numberOfClasters; ++k)
     {
         QImage image(image_size, QImage::Format_ARGB32_Premultiplied);
         QPainter *painter = new QPainter(&image);
+        //painter->fillRect(0, 0, image_size.width(), image_size.height(), Qt::white);
 
         for (size_t j = 0; j < sizeOfClaster; ++j)
         {
@@ -88,13 +90,13 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         if(counter % mod != 0)
         {
             width += painters.at(0).size().width();
-            p->drawImage(width - hexagon->getWidth() * 3 / 2 * (counter % mod),
+            p->drawImage(width - hexagon->getWidth() * (counter % mod),
                          height ,
                          painters.at(counter));
         }
         else
         {
-            height += painters.at(0).size().height()- hexagon->getHeight() ;
+            height += painters.at(0).size().height() - hexagon->getHeight() / 2;
             width = shift.x();
             p->drawImage(width,
                          height,
@@ -102,7 +104,6 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         }
         ++counter;
     }
-
 }
 
 void HexagonalGrid::setScale(qreal scale)
@@ -145,7 +146,8 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
     }
     qreal x_coef = totalWidth / painter->window().size().width();
     qreal y_coef = totalHeight / painter->window().size().height();
-    currentHexagon.setCellByPoint( - shift.x() / x_coef + painter->window().bottomRight().x(), - shift.y() / y_coef + painter->window().bottomRight().y());
+    qDebug() << "x_coef = " << - shift.x() / x_coef << "\ty_coef = " << - shift.y() / y_coef;
+    currentHexagon.setCellByPoint( - shift.x() / x_coef + painter->window().bottomRight().x() / x_coef, - shift.y() / y_coef + painter->window().bottomRight().y() / y_coef );
     qDebug() << "Mi = " << currentHexagon.getIndexI() << "\tMj = " << currentHexagon.getIndexJ();
     painter->end();
 }

@@ -52,5 +52,5 @@ private:
 
     const qreal scaleFactor = 120.0;\
     const size_t numberOfClasters = 4;
-    const size_t sizeOfClaster = 10;
+    const size_t sizeOfClaster = 11;
 };
