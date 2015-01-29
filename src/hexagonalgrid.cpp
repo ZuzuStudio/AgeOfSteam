@@ -1,4 +1,4 @@
-#include "include/hexagonalgrid.h"
+﻿#include "include/hexagonalgrid.h"
 
 HexagonalGrid::ArrayGrid::ArrayGrid(unsigned rows, unsigned colomns):rows(rows), colomns(colomns)
 {
@@ -90,7 +90,7 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         if(counter % mod != 0)
         {
             width += painters.at(0).size().width();
-            p->drawImage(width - hexagon->getWidth() * (counter % mod),
+            p->drawImage(width - (sizeOfClaster % 2 == 0 ? hexagon->getWidth() * (counter % mod) / 4 : hexagon->getWidth() * (counter % mod)),
                          height ,
                          painters.at(counter));
         }
@@ -128,6 +128,9 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
     Hexagon currentHexagon(100 * scale);
     currentHexagon.setCellIndex(0, 0);
     currentHexagon.computeCorners(cornersX, cornersY);
+    image_size = QSize( (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersX[2] - cornersX[5]) +
+                        (sizeOfClaster / 2  + (sizeOfClaster % 2 == 0 ? 0.5 : 0)) * (cornersX[1] - cornersX[0]),
+                         (sizeOfClaster + 0.5) * (cornersY[4] - cornersY[0]) );
 
     int totalWidth = image_size.width();
     unsigned width_cells = totalWidth / ( (cornersX[2] - cornersX[5]) * 0.75) + 2;
@@ -144,10 +147,9 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
                     (cornersX[2] - cornersX[5]) + 1, (cornersY[4] - cornersY[0]) + 1));
         }
     }
-    qreal x_coef = totalWidth / painter->window().size().width();
-    qreal y_coef = totalHeight / painter->window().size().height();
-    qDebug() << "x_coef = " << - shift.x() / x_coef << "\ty_coef = " << - shift.y() / y_coef;
-    currentHexagon.setCellByPoint( - shift.x() / x_coef + painter->window().bottomRight().x() / x_coef, - shift.y() / y_coef + painter->window().bottomRight().y() / y_coef );
+
+    currentHexagon.setCellByPoint( - shift.x() * scale + painter->window().bottomRight().x() ,
+                                   - shift.y() * scale + painter->window().bottomRight().y() );
     qDebug() << "Mi = " << currentHexagon.getIndexI() << "\tMj = " << currentHexagon.getIndexJ();
     painter->end();
 }
