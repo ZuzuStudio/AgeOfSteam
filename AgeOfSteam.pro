@@ -26,7 +26,9 @@ SOURCES += \
     src/levelofdetalisation.cpp \
     src/mapwidget.cpp \
     src/hexagon.cpp \
-    src/hexagonalgrid.cpp
+    src/hexagonalgrid.cpp \
+    src/mapgenerator.cpp \
+    src/arraygrid.cpp
 
 HEADERS += \
     include/mainwindow.h \
@@ -35,7 +37,9 @@ HEADERS += \
     include/levelofdetalisation.h \
     include/mapwidget.h \
     include/hexagon.h \
-    include/hexagonalgrid.h
+    include/hexagonalgrid.h \
+    include/mapgenerator.h \
+    include/arraygrid.h
 
 RESOURCES += \
     res/res.qrc

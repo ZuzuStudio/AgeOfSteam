@@ -1,4 +1,5 @@
 #include "../include/mapwidget.h"
+#include "../include/mapgenerator.h"
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,11 +12,16 @@ MapWidget::MapWidget(QWidget *parent) :
     renderer = new QSvgRenderer(QString(":/res/Land.svg"),
                                 this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
-    connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
+    //connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
     setAttribute(Qt::WA_AcceptTouchEvents);
 
-    HG = new HexagonalGrid(scale);
-    HG->drawRastr(renderer);
+    QSvgRenderer **renderArray = new QSvgRenderer*[2];
+    renderArray[0] = new QSvgRenderer(QString(":/res/Land.svg"), this);
+    renderArray[1] = new QSvgRenderer(QString(":/res/Sea.svg"), this);
+    HG = new HexagonalGrid(MapGenerator::generate(120,60),renderArray, scale);
+
+    //HG = new HexagonalGrid(scale);
+    //HG->drawRastr(renderer);
 
 }
 
@@ -35,7 +41,8 @@ void MapWidget::paintEvent(QPaintEvent *event)
     {
         p.scale(scale, scale);
         HG->setScale(scale);
-        HG->gluingTogetherClasters(&p);
+        HG->draw(&p);
+        //HG->gluingTogetherClasters(&p);
     }
     else // we need to show svg for low detalised texture
     {
