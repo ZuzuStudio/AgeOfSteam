@@ -8,7 +8,7 @@ MapWidget::MapWidget(QWidget *parent) :
     scale(20)
 {
     image  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
-    renderer = new QSvgRenderer(QString(":/res/Land.svg"),
+    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
                                 this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
     connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));

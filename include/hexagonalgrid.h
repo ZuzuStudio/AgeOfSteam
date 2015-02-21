@@ -51,7 +51,7 @@ private:
     QPoint total_size;
 
     const qreal scaleFactor = 120.0;
-    const size_t numberOfClasters = 16;
-    const size_t sizeOfClaster = 10; // from now on it is important
-                                     // to use only clusters which size is odd integer
+    const size_t numberOfClasters = 4;
+    const size_t sizeOfClaster = 33;  // from now on it is important
+                                      // to use only clusters which size is odd integer
 };
