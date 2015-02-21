@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   version="1.1"
-   width="256"
+   id="svg2"
    height="256"
-   id="svg2">
+   width="221.702"
+   version="1.1">
   <defs
-     id="defs4">
-  </defs>
+     id="defs4" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -28,12 +24,12 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(0,-796.36218)"
-     id="layer1">
+     id="layer1"
+     transform="translate(-17.148999,-796.36218)">
     <path
-       d="m 256.42856,127.99473 -64.21165,111.21783 -128.423293,0 L -0.41802979,127.99473 63.793617,16.776893 l 128.423293,0 z"
-       transform="matrix(0.8660254,-0.5,0.5,0.8660254,-46.84791,877.51285)"
+       style="fill:#ccd13b;fill-opacity:1;stroke:none"
        id="path3025"
-       style="fill:#ccd13b;fill-opacity:1;stroke:none" />
+       transform="matrix(0.8660254,-0.5,0.5,0.8660254,-46.84791,877.51285)"
+       d="m 255.99785,127.99654 -64,110.85125 -127.999783,1.3e-4 L -0.00171542,127.99679 63.998285,17.145539 191.99807,17.145414 Z" />
   </g>
 </svg>
