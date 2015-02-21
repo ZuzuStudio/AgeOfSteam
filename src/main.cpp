@@ -9,6 +9,7 @@ TODO: license here
 #endif
 
 #include "../include/mapwidget.h"
+#include "../include/mainwindow.h"
 #include <QDebug>
 
 int main(int argc, char **argv)

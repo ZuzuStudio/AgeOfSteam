@@ -14,12 +14,11 @@ class HexagonalGrid
 
 public:
 
-    explicit HexagonalGrid(qreal scale);
+    HexagonalGrid(qreal scale, QPoint topLeft, QPoint topRight, QPoint bottomRight, QPoint bottomLeft);
     ~HexagonalGrid();
     std::vector<QImage> drawRastr(QSvgRenderer * renderer);
     void drawSVG(QSvgRenderer * renderer, QPainter * painter);
     void gluingTogetherClasters(QPainter * painter);
-
     void setScale(qreal scale);
     void addShift(int x, int y);
     void addShift(QPoint pos);
@@ -30,16 +29,16 @@ private:
     {
     private:
         int **array;
-        unsigned rows, colomns;
-        const int number_of_hex_corners = 6;
-        const int cell_radius = 40;
+        size_t rows, colomns;
 
     public:
-        ArrayGrid(unsigned rows, unsigned colomns);
+        ArrayGrid(size_t rows, size_t colomns);
         ~ArrayGrid();
         int ** createGrid();
 
     }* grid;
+
+    void calculateScreenCoordinates();
 
     QSize image_size;
     Hexagon *hexagon;
@@ -48,10 +47,9 @@ private:
     std::vector<QImage> painters;
 
     QPoint shift;
-    QPoint total_size;
-
-    const qreal scaleFactor = 120.0;
-    const size_t numberOfClasters = 4;
-    const size_t sizeOfClaster = 33;  // from now on it is important
-                                      // to use only clusters which size is odd integer
+    QPoint mapLeftTop, mapRightTop, mapRightBottom, mapLeftBottom;
+    QPoint screenLeftTop, screenRightTop, screenRightBottom, screenLeftBottom;
+    const size_t numberOfClasters = 25;
+    const size_t sizeOfClaster = 20;  // from now on it is important
+                                     // to use only clusters which size is odd integer
 };

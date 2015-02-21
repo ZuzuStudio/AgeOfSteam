@@ -1,6 +1,6 @@
 ﻿#include "include/hexagonalgrid.h"
 
-HexagonalGrid::ArrayGrid::ArrayGrid(unsigned rows, unsigned colomns):rows(rows), colomns(colomns)
+HexagonalGrid::ArrayGrid::ArrayGrid(size_t rows, size_t colomns):rows(rows), colomns(colomns)
 {
     array = new int*[rows];
     for(size_t i = 0; i < rows; ++i)
@@ -36,11 +36,22 @@ int ** HexagonalGrid::ArrayGrid::createGrid()
     return array;
 }
 
-HexagonalGrid::HexagonalGrid(qreal scale):grid(nullptr), hexagon(nullptr), scale(scale), shift(0,0)
+HexagonalGrid::HexagonalGrid(qreal scale, QPoint topLeft, QPoint topRight, QPoint bottomRight, QPoint bottomLeft):
+    grid(nullptr),
+    hexagon(nullptr),
+    scale(scale),
+    shift(0, 0),
+    mapLeftTop(0, 0),
+    mapRightTop(0, 0),
+    mapRightBottom(0, 0),
+    mapLeftBottom(0, 0)
 {
     hexagon = new Hexagon(100);
     grid = new ArrayGrid(20, 20);
-
+    screenLeftTop = topLeft;
+    screenRightTop = topRight;
+    screenRightBottom = bottomRight;
+    screenLeftBottom = bottomLeft;
 }
 
 HexagonalGrid::~HexagonalGrid()
@@ -59,7 +70,7 @@ std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
     hexagon->computeCorners(cornersX, cornersY);
     image_size = QSize( (sizeOfClaster + 0.5) * (cornersX[1] - cornersX[5]),
                         (sizeOfClaster / 2 + sizeOfClaster % 2) * (cornersY[3] - cornersY[0]) +
-                         sizeOfClaster / 2 * (cornersY[2] - cornersY[1]));
+                         (sizeOfClaster / 2 + 0.5) * (cornersY[2] - cornersY[1]));
 
     for(size_t k = 0; k < numberOfClasters; ++k)
     {
@@ -81,25 +92,26 @@ std::vector<QImage> HexagonalGrid::drawRastr(QSvgRenderer * renderer)
     }
     return painters;
 }
-//44 текущее знач регистра интсрукции помещается в стек и управление переходит по указанному адресу
-//45 управление передаётся по адресу в стеке. из стека выталкивается некоторое количество машинных слов
-/*
-1. if a function has a return statement then make a push()
-2. function params are placed in stack inverse
-3. call() is called
-4. registr bios is placed in stack
-5. in bios register top register statement is placed
-*/
-
-/*
-1. pop destructs local variables
-2. get from stack old bios and place it at top
-3. return from function adress is the number of function params
-4. function result is placed at stack's top, then to get it use pop or
-*/
 
 void HexagonalGrid::gluingTogetherClasters(QPainter *p)
 {
+    calculateScreenCoordinates();
+    /*if(screenLeftTop.x() < 0)
+    {
+        shift.rx() = 0;
+    }
+    else if(screenLeftTop.y() < 0)
+    {
+        shift.ry() = 0;
+    }
+    else if(screenRightTop.x() > mapRightTop.x())
+    {
+        shift.rx() = mapRightTop.x();
+    }
+    else if(screenRightBottom.y() > mapRightBottom.y())
+    {
+        shift.ry() = mapRightBottom.y();
+    }*/
     size_t counter = 1;
     int width = shift.x();
     int height = shift.y();
@@ -118,7 +130,7 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         }
         else
         {
-            height += painters.at(0).size().height() - hexagon->getHeight();
+            height += painters.at(0).size().height() - hexagon->getHeight() * 0.25 - (sizeOfClaster - 1);
             width = shift.x();
             p->drawImage(width,
                          height,
@@ -126,6 +138,19 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
         }
         ++counter;
     }
+    width += hexagon->getWidth();
+    height += hexagon->getHeight();
+    mapRightTop = QPoint(width, 0);
+    mapRightBottom = QPoint(width, height);
+    mapLeftBottom = QPoint(0, height);
+}
+
+void HexagonalGrid::calculateScreenCoordinates()
+{
+    screenLeftTop += shift;
+    screenRightTop += shift;
+    screenRightBottom += shift;
+    screenLeftBottom += shift;
 }
 
 void HexagonalGrid::setScale(qreal scale)
