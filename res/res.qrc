@@ -5,8 +5,5 @@
         <file>hillFlatLod3_res.svg</file>
         <file>landFlatLod1_res.svg</file>
         <file>seeFlatLod1_res.svg</file>
-        <file>Land.svg</file>
-        <file>hill_(flat_top)_res.svg</file>
-        <file>Sea.svg</file>
     </qresource>
 </RCC>
