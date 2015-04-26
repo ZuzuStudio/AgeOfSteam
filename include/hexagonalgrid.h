@@ -1,21 +1,11 @@
 #ifndef HEXAGONALGRID_H
 #define HEXAGONALGRID_H
 
-#endif // HEXAGONALGRID_H
-
-#include "include/arraygrid.h"
 #include "include/hexagon.h"
 #include <QSvgRenderer>
 #include <QImage>
 #include <QPainter>
 #include <QDebug>
-
-struct Claster{
-    QImage image;
-    QPoint position;
-    unsigned rows;
-    unsigned columns;
-};
 
 class HexagonalGrid
 {
@@ -32,7 +22,6 @@ public:
     void addShift(QPoint pos);
 
 private:
-    void makeClasters();
 
     class ArrayGrid
     {
@@ -62,3 +51,5 @@ private:
     const size_t sizeOfClaster = 20;  // from now on it is important
                                      // to use only clusters which size is odd integer
 };
+
+#endif // HEXAGONALGRID_H

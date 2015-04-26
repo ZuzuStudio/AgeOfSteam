@@ -47,7 +47,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
     {
         p.scale(scale, scale);
         HG->setScale(scale);
-        HG->draw(&p);
+        //HG->draw(&p);
         //HG->gluingTogetherClasters(&p);
     }
     else // we need to show svg for low detalised texture
