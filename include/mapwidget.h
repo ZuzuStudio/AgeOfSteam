@@ -12,28 +12,25 @@ class MapWidget : public QWidget
 {
         Q_OBJECT
     public:
-        explicit MapWidget(QWidget *parent = 0);
-        void setScale(double scale)
-        {
-            this->scale = scale;
-        }
+        explicit MapWidget(QWidget *parent = nullptr);
+        void setScale(double scale);
         ~MapWidget();
 
 
     protected:
         void paintEvent(QPaintEvent *event);
         void keyPressEvent(QKeyEvent *event);
-        virtual bool event(QEvent *event);
+        bool event(QEvent *event);
 
 
     private:
         HexagonalGrid * HG;
+        QPoint leftTop, rightTop, rightBottom, leftBottom, center;
+        void calculateCenter();
 
         //---translating around point
         QPoint origin;
         QPoint d_origin;
-        QSize pivotPoint;
-
         QPoint clickPos;
 
         QSvgRenderer *renderer;

@@ -3,10 +3,16 @@
 
 MapWidget::MapWidget(QWidget *parent) :
     QWidget(parent),
+    HG(nullptr),
+    leftTop(0, 0),
+    rightTop(0, 0),
+    rightBottom(0, 0),
+    leftBottom(0, 0),
+    center(0, 0),
     origin(0, 0),
     renderer(nullptr),
     image(nullptr),
-    scale(20)
+    scale(0)
 {
     image  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
     renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
@@ -15,14 +21,14 @@ MapWidget::MapWidget(QWidget *parent) :
     //connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
     setAttribute(Qt::WA_AcceptTouchEvents);
 
-    QSvgRenderer **renderArray = new QSvgRenderer*[2];
-    renderArray[0] = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"), this);
-    renderArray[1] = new QSvgRenderer(QString(":/res/seeFlatLod1_res.svg"), this);
-    HG = new HexagonalGrid(MapGenerator::generate(120,60),renderArray, scale);
+    leftTop = window()->rect().topLeft();
+    rightTop = window()->rect().topRight();
+    rightBottom = window()->rect().bottomRight();
+    leftBottom = window()->rect().bottomLeft();
+    calculateCenter();
 
-    //HG = new HexagonalGrid(scale);
-    //HG->drawRastr(renderer);
-
+    HG = new HexagonalGrid(scale, leftTop, rightTop, rightBottom, leftBottom);
+    HG->drawRastr(renderer);
 }
 
 MapWidget::~MapWidget()
@@ -80,6 +86,17 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
         QWidget::keyPressEvent(event);
         break;
     }
+}
+
+void MapWidget::setScale(double scale)
+{
+    this->scale = scale;
+}
+
+void MapWidget::calculateCenter()
+{
+    center.rx() = (rightTop.rx() - leftTop.rx()) / 2;
+    center.ry() = (rightBottom.ry() - rightTop.ry()) / 2;
 }
 
 /**

@@ -22,15 +22,11 @@ class HexagonalGrid
 
 public:
 
-    explicit HexagonalGrid(qreal scale);
-    HexagonalGrid(ArrayGrid *grid, QSvgRenderer **rendererArray, qreal scale);
-
+    HexagonalGrid(qreal scale, QPoint topLeft, QPoint topRight, QPoint bottomRight, QPoint bottomLeft);
     ~HexagonalGrid();
     std::vector<QImage> drawRastr(QSvgRenderer * renderer);
     void drawSVG(QSvgRenderer * renderer, QPainter * painter);
     void gluingTogetherClasters(QPainter * painter);
-    void draw(QPainter * painter);
-
     void setScale(qreal scale);
     void addShift(int x, int y);
     void addShift(QPoint pos);
@@ -38,12 +34,20 @@ public:
 private:
     void makeClasters();
 
-    ArrayGrid *grid;
-    QSvgRenderer **rendererArray;
-    std::vector<Claster> clastersVector;
-    Claster **clasters;
-    size_t clastersRows;
-    size_t clastersColumns;
+    class ArrayGrid
+    {
+    private:
+        int **array;
+        size_t rows, colomns;
+
+    public:
+        ArrayGrid(size_t rows, size_t colomns);
+        ~ArrayGrid();
+        int ** createGrid();
+
+    }* grid;
+
+    void calculateScreenCoordinates();
 
     QSize image_size;
     Hexagon *hexagon;
@@ -52,10 +56,9 @@ private:
     std::vector<QImage> painters;
 
     QPoint shift;
-    QPoint total_size;
-
-    const qreal scaleFactor = 120.0;
-    size_t numberOfClasters = 16;
-    const size_t sizeOfClaster = 10; // from now on it is important
+    QPoint mapLeftTop, mapRightTop, mapRightBottom, mapLeftBottom;
+    QPoint screenLeftTop, screenRightTop, screenRightBottom, screenLeftBottom;
+    const size_t numberOfClasters = 25;
+    const size_t sizeOfClaster = 20;  // from now on it is important
                                      // to use only clusters which size is odd integer
 };

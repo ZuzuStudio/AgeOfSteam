@@ -41,8 +41,8 @@ public :
 private:
     static const int number_of_neighbours = 6;
 
-    const int neigbours_di[number_of_neighbours] = {0, 1, 1, 0, -1, -1};
-    const int neigbours_dj[2][number_of_neighbours] = { {-1, -1, 0, 1, 0, -1}, {-1, 0, 1, 1, 1, 0} };
+    const int neigbours_di[2][number_of_neighbours] = {{1, 0, -1, 0, 1, -1}, {-1, 0, 1, 0, -1, 1}};
+    const int neigbours_dj[number_of_neighbours] = {-1, 1, 0, 1, -1, 0};
 
     int corners_dx[number_of_neighbours]; //horizontal offsets of cell's corners
     int corners_dy[number_of_neighbours];

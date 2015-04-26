@@ -9,13 +9,14 @@ TODO: license here
 #endif
 
 #include "../include/mapwidget.h"
+#include "../include/mainwindow.h"
 #include <QDebug>
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     MapWidget window;
-    window.setScale(0.2);
+    window.setScale(0.333);
     window.show();
 
     return app.exec();
