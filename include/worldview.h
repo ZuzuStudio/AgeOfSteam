@@ -13,7 +13,7 @@ public:
 private:
     int mapLeft, mapRight, mapTop, mapBottom;
     int screenLeft, screenRight, screenTop, screenBottom;
-    QPoint screenCenter;
+    QPoint currentCenter; //in map coordinate
     qreal scale;
 };
 
