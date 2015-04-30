@@ -3,6 +3,22 @@
 
 using namespace std;
 
+enum Direction {neg, pos};
+
+template<Direction dir>
+int oneWay(int value);
+
+template<>
+int oneWay<neg>(int value)
+{
+    return value < 0 ? value : 0;
+}
+
+template<>
+int oneWay<pos>(int value)
+{
+    return value > 0 ? value : 0;
+}
 
 WorldView::WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
                      int screenLeft, int screenRight, int screenTop, int screenBottom,
@@ -37,12 +53,33 @@ void WorldView::moveScreen(QPoint screenShift)
 
 void WorldView::decreaseScale()
 {
-    //TODO
+    auto futureScale = scale / 1.01;
+
+    if(futureScale > minimalScale)
+    {
+        auto minimalSimpleScale =
+            max(max((qreal)screenLeft / (mapLeft - currentCenter.x()),
+                    (qreal)screenRight / (mapRight - currentCenter.x())),
+                max((qreal)screenTop / (mapTop - currentCenter.y()),
+                    (qreal)screenBottom / (mapBottom - currentCenter.y())));
+
+        if(futureScale < minimalSimpleScale)
+        {
+            auto shift = QPoint(oneWay<pos>(screenLeft - mapLeft)
+                                + oneWay<pos>(screenRight - mapRight),
+                                oneWay<pos>(screenTop - mapTop)
+                                + oneWay<pos>(screenBottom - mapBottom));
+            currentCenter += shift;
+        }
+
+        scale = futureScale;
+    }
 }
 
 void WorldView::increaseScale()
 {
     auto futureScale = scale * 1.01;
+
     if(futureScale > maximalScale)
         scale = maximalScale;
     else
