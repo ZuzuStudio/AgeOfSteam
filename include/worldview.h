@@ -16,6 +16,7 @@ public:
     ~WorldView() = default;
 
     void moveScreen(QPoint screenShift);
+
     void moveScreen(int x, int y)
     {
         moveScreen(QPoint(x, y));
@@ -23,6 +24,26 @@ public:
 
     void decreaseScale();
     void increaseScale();
+
+    QPoint getNW() const
+    {
+        return QPoint(screenLeft, screenTop);
+    }
+
+    QPoint getNE() const
+    {
+        return QPoint(screenRight, screenTop);
+    }
+
+    QPoint getSW() const
+    {
+        return QPoint(screenLeft, screenBottom);
+    }
+
+    QPoint getSE() const
+    {
+        return QPoint(screenRight, screenBottom);
+    }
 private:
     int mapLeft, mapRight, mapTop, mapBottom;
     int screenLeft, screenRight, screenTop, screenBottom;
