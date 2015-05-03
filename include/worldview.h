@@ -25,6 +25,8 @@ public:
     void decreaseScale();
     void increaseScale();
 
+    qreal getScale() const {return scale;}
+
     QPoint getNW() const
     {
         return QPoint(screenLeft, screenTop);
