@@ -44,7 +44,8 @@ HexagonalGrid::HexagonalGrid(qreal scale, QPoint topLeft, QPoint topRight, QPoin
     mapLeftTop(0, 0),
     mapRightTop(0, 0),
     mapRightBottom(0, 0),
-    mapLeftBottom(0, 0)
+    mapLeftBottom(0, 0),
+    worldView(0,0,0,0,  topLeft.x(), bottomRight.x(), topLeft.y(), bottomRight.y(), scale)
 {
     hexagon = new Hexagon(100);
     grid = new ArrayGrid(20, 20);

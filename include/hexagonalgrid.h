@@ -2,6 +2,7 @@
 #define HEXAGONALGRID_H
 
 #include "include/hexagon.h"
+#include "include/worldview.h"
 #include <QSvgRenderer>
 #include <QImage>
 #include <QPainter>
