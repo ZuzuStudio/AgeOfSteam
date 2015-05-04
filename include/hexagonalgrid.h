@@ -48,6 +48,7 @@ private:
     QPoint shift;
     QPoint mapLeftTop, mapRightTop, mapRightBottom, mapLeftBottom;
     QPoint screenLeftTop, screenRightTop, screenRightBottom, screenLeftBottom;
+    WorldView worldView;
     const size_t numberOfClasters = 25;
     const size_t sizeOfClaster = 20;  // from now on it is important
                                      // to use only clusters which size is odd integer
