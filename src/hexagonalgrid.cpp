@@ -1,6 +1,6 @@
 ﻿#include "include/hexagonalgrid.h"
 
-HexagonalGrid::ArrayGrid::ArrayGrid(size_t rows, size_t colomns):rows(rows), colomns(colomns)
+/*HexagonalGrid::ArrayGrid::ArrayGrid(size_t rows, size_t colomns):rows(rows), colomns(colomns)
 {
     array = new int*[rows];
     for(size_t i = 0; i < rows; ++i)
@@ -24,6 +24,7 @@ HexagonalGrid::ArrayGrid::~ArrayGrid()
  * Now it just creates a simple matrix of 1's, but in nearest time it should also become
  * the base of generation of true map
 */
+/*
 int ** HexagonalGrid::ArrayGrid::createGrid()
 {
     for(size_t i = 0; i < rows; ++i)
@@ -112,7 +113,7 @@ void HexagonalGrid::gluingTogetherClasters(QPainter *p)
     else if(screenRightBottom.y() > mapRightBottom.y())
     {
         shift.ry() = mapRightBottom.y();
-    }*/
+    }*//*
     size_t counter = 1;
     int width = shift.x();
     int height = shift.y();
@@ -206,7 +207,7 @@ void HexagonalGrid::drawSVG(QSvgRenderer *renderer, QPainter *painter)
      * which clusters should be loaded. I suppose that we need to load each cluster corresponding
      * for it's point. Hope so, the worst case is 4(8) clusters to load won't be a great ploblem
      * to solve.
-    */
+    *//*
 }
-
+*/
 

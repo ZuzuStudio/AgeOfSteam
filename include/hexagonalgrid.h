@@ -1,12 +1,46 @@
 #ifndef HEXAGONALGRID_H
 #define HEXAGONALGRID_H
 
-#include "include/hexagon.h"
-#include "include/worldview.h"
-#include <QSvgRenderer>
-#include <QImage>
-#include <QPainter>
-#include <QDebug>
+//#include "include/hexagon.h"
+
+#include <QPoint>
+#include <QPointF>
+
+class HexagonalGrid
+{
+public:
+    HexagonalGrid(int colls, int rows, int hexagonSize);
+    //TODO GVI
+
+    QPointF cellCenter(int collumnIndex, int rowIndex)const;
+    int collumn(QPointF point)const;
+    int row(QPointF point)const;
+
+    int leftMapBorder()const
+    {
+        return left;
+    }
+
+    int rightMapBorder()const
+    {
+        return right;
+    }
+
+    int topMapBorder()const
+    {
+        return top;
+    }
+
+    int bottomMapBorder()const
+    {
+        return bottom;
+    }
+
+private:
+    int left, right, top, bottom;
+};
+
+/*
 
 class HexagonalGrid
 {
@@ -53,5 +87,7 @@ private:
     const size_t sizeOfClaster = 20;  // from now on it is important
                                      // to use only clusters which size is odd integer
 };
+
+*/
 
 #endif // HEXAGONALGRID_H

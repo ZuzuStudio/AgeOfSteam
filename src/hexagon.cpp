@@ -1,6 +1,6 @@
 #include "include/hexagon.h"
 
-Hexagon::Hexagon():radius(0), size(0), height(0), width(0)
+/*Hexagon::Hexagon():radius(0), size(0), height(0), width(0)
 {
 }
 
@@ -126,3 +126,4 @@ void Hexagon::setCellByPoint(int x, int y)
 
 }
 
+*/
