@@ -59,10 +59,10 @@ ArrayGrid *MapGenerator::generate(int width, int height)
 
     //makeFile(map, width, height);
 
-    ArrayGrid *m = new ArrayGrid((unsigned**)map, height, width);
+    //ArrayGrid *m = new ArrayGrid((unsigned**)map, height, width);
 
     //makeFile(m);
-    return m;
+    return nullptr;
 }
 
 void MapGenerator::makeFile(Territori **map, int width, int height, QString filename)
