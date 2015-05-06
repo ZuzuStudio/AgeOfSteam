@@ -2,6 +2,7 @@
 #define WORLDVIEW_H
 
 #include <QPoint>
+#include <QPointF>
 
 class WorldView final
 {
@@ -25,26 +26,26 @@ public:
     void decreaseScale();
     void increaseScale();
 
-    qreal getScale() const {return scale;}
+    const qreal &getScale() const {return scale;}
 
-    QPoint getNW() const
+    QPointF getNW() const
     {
-        return QPoint(screenLeft, screenTop);
+        return QPointF(screenLeft, screenTop);
     }
 
-    QPoint getNE() const
+    QPointF getNE() const
     {
-        return QPoint(screenRight, screenTop);
+        return QPointF(screenRight, screenTop);
     }
 
-    QPoint getSW() const
+    QPointF getSW() const
     {
-        return QPoint(screenLeft, screenBottom);
+        return QPointF(screenLeft, screenBottom);
     }
 
-    QPoint getSE() const
+    QPointF getSE() const
     {
-        return QPoint(screenRight, screenBottom);
+        return QPointF(screenRight, screenBottom);
     }
 private:
     int mapLeft, mapRight, mapTop, mapBottom;
