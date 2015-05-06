@@ -1,23 +1,23 @@
 #ifndef LEVELOFDETALISATION_H
 #define LEVELOFDETALISATION_H
 
+#include <vector>
 #include <QSvgRenderer>
 
 class LevelOfDetalisation
 {
-    public:
-        LevelOfDetalisation(QString fileName, double upperLimit, double downLimit);
-        ~LevelOfDetalisation() throw();
+public:
+    LevelOfDetalisation(const qreal &referenceToCurrentScale);
+    LevelOfDetalisation(const LevelOfDetalisation &)=delete;
 
-        void setUpperLimit(double value)  throw() {upperLimitField = value;}
-        double upperLimit() const throw() {return upperLimitField;}
-        void setDownLimit(double value) throw() {downLimitField = value;}
-        double downLimit() const throw() {return downLimitField;}
-        const QSvgRenderer *renderer() const throw() {return rendererField;}
-    private:
-        QSvgRenderer *rendererField;
-        double upperLimitField;
-        double downLimitField;
+    ~LevelOfDetalisation() noexcept;
+
+    void addRenderer(const QString &fileName, qreal downLimit);
+    const QSvgRenderer *renderer() const noexcept;
+private:
+    const qreal &currentScale;
+    std::vector<QSvgRenderer *> renderers;
+    std::vector<qreal> limits;
 };
 
 #endif // LEVELOFDETALISATION_H
