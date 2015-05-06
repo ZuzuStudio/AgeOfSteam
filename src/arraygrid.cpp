@@ -1,46 +1,55 @@
 #include "include/arraygrid.h"
+#include <assert.h>
 
-ArrayGrid::ArrayGrid(unsigned **array, unsigned rows, unsigned columns):
-    array(array), rows(rows), columns(columns)
-{}
-
-ArrayGrid::ArrayGrid(unsigned rows, unsigned columns):
-    rows(rows), columns(columns)
+ArrayGrid::ArrayGrid(TerrainType **array, unsigned rows, unsigned columns):
+    array(nullptr), mColumns(columns), mRows(rows)
 {
-    array = new unsigned*[rows];
-    for(unsigned i = 0; i < rows; ++i)
-    {
-        array[i] = new unsigned[columns];
-    }
+    assert(columns > 0);
+    assert(rows > 0);
+    allocateMemory();
+    for(unsigned column = 0; column < mColumns; ++column)
+        for(unsigned row = 0; row < mRows; ++row)
+            this->array[column][row] = array[column][row];
 }
 
-int ArrayGrid::get(unsigned row, unsigned column)
+ArrayGrid::ArrayGrid(unsigned columns, unsigned rows):
+    array(nullptr), mColumns(columns), mRows(rows)
 {
-    return array[row][column];
+    assert(columns > 0);
+    assert(rows > 0);
+    allocateMemory();
+    for(unsigned column = 0; column < mColumns; ++column)
+        for(unsigned row = 0; row < mRows; ++row)
+            this->array[column][row] = HILL;
 }
 
-void ArrayGrid::set(int value, unsigned row, unsigned column)
+TerrainType ArrayGrid::cell(unsigned column, unsigned row)
 {
-    array[row][column] = value;
+    return array[column][row];
 }
 
-int ArrayGrid::getRows()
+void ArrayGrid::setCell(TerrainType value, unsigned row, unsigned column)
 {
-    return rows;
-}
-
-int ArrayGrid::getColumns()
-{
-    return columns;
+    array[column][row] = value;
 }
 
 ArrayGrid::~ArrayGrid()
 {
-    for(unsigned i = 0; i < rows; ++i)
+    for(unsigned column = 0; column < mColumns; ++column)
     {
-        delete [] array[i];
+        delete [] array[column];
+        array[column] = nullptr;
     }
     delete [] array;
     array = nullptr;
+}
+
+void ArrayGrid::allocateMemory()
+{
+    array = new TerrainType*[mColumns]();
+    for(unsigned column = 0; column < mColumns; ++column)
+    {
+        array[column] = new TerrainType[mRows];
+    }
 }
 
