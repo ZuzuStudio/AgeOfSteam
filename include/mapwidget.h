@@ -6,25 +6,35 @@
 #include <QImage>
 #include <QPainter>
 #include <QKeyEvent>
-#include <include/hexagonalgrid.h>
+#include <vector>
+#include "include/arraygrid.h"
+#include "include/hexagonalgrid.h"
+#include "include/worldview.h"
+#include "include/levelofdetalisation.h"
+
 
 class MapWidget : public QWidget
 {
         Q_OBJECT
     public:
-        explicit MapWidget(QWidget *parent = nullptr);
-        void setScale(double scale);
+        explicit MapWidget(ArrayGrid &model, QWidget *parent = nullptr);
+        //void setScale(double scale);
         ~MapWidget();
 
 
     protected:
         void paintEvent(QPaintEvent *event);
         void keyPressEvent(QKeyEvent *event);
-        bool event(QEvent *event);
+        //bool event(QEvent *event);
 
 
     private:
-        HexagonalGrid * HG;
+        ArrayGrid &model;
+        HexagonalGrid *grid;
+        WorldView *worldView;
+        std::vector<LevelOfDetalisation *> terrainTypes;
+        QImage *imageBufer;
+        /*HexagonalGrid * HG;
         QPoint leftTop, rightTop, rightBottom, leftBottom, center;
         void calculateCenter();
 
@@ -35,7 +45,7 @@ class MapWidget : public QWidget
 
         QSvgRenderer *renderer;
         QImage *image;
-        double scale;
+        double scale;*/
 };
 
 #endif // MAPWIDGET_H
