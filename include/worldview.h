@@ -28,12 +28,20 @@ public:
     void decreaseScale();
     void increaseScale();
 
-    const qreal &getScale() const {return scale;}
+    const qreal &getScale() const
+    {
+        return scale;
+    }
 
     QPointF getNW() const;
     QPointF getNE() const;
     QPointF getSW() const;
     QPointF getSE() const;
+
+    QPointF transformToScreenCordinates(const QPointF &point)const;
+    QPointF transformToMapCordinates(const QPointF &point)const;
+    QRectF transformToScreenCordinates(QRectF rect)const; //by value semantic is essential
+    QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
     int mapLeft, mapRight, mapTop, mapBottom;
     int screenLeft, screenRight, screenTop, screenBottom;

@@ -95,24 +95,46 @@ void WorldView::increaseScale()
 
 QPointF WorldView::getNW() const
 {
-    return QPointF(currentCenter.x() + screenLeft / scale,
-                   currentCenter.y() + screenTop / scale);
+    return transformToMapCordinates(QPointF(screenLeft, screenTop));
 }
 
 QPointF WorldView::getNE() const
 {
-    return QPointF(currentCenter.x() + screenRight / scale,
-                   currentCenter.y() + screenTop / scale);
+    return transformToMapCordinates(QPointF(screenRight, screenTop));
 }
 
 QPointF WorldView::getSW() const
 {
-    return QPointF(currentCenter.x() + screenLeft / scale,
-                   currentCenter.y() + screenBottom / scale);
+    return transformToMapCordinates(QPointF(screenLeft, screenBottom));
 }
 
 QPointF WorldView::getSE() const
 {
-    return QPointF(currentCenter.x() + screenRight / scale,
-                   currentCenter.y() + screenBottom / scale);
+    return transformToMapCordinates(QPointF(screenRight, screenBottom));
+}
+
+QPointF WorldView::transformToScreenCordinates(const QPointF &point) const
+{
+    return QPointF((currentCenter.x() - point.x()) * scale,
+                   (currentCenter.y() - point.y()) * scale);
+}
+
+QPointF WorldView::transformToMapCordinates(const QPointF &point) const
+{
+    return QPointF(currentCenter.x() + point.x() / scale,
+                   currentCenter.y() + point.y() / scale);
+}
+
+QRectF WorldView::transformToScreenCordinates(QRectF rect) const
+{
+    rect.moveCenter(transformToScreenCordinates(rect.center()));
+    rect.setSize(rect.size() * scale);
+    return rect;
+}
+
+QRectF WorldView::transformToMapCordinates(QRectF rect) const
+{
+    rect.moveCenter(transformToMapCordinates(rect.center()));
+    rect.setSize(rect.size() / scale);
+    return rect;
 }
