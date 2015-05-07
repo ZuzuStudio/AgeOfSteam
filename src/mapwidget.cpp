@@ -119,22 +119,22 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     switch(event->key())
     {
     case Qt::Key_A:
-        worldView->moveScreen(QPoint(+10, 0));
+        worldView->moveScreen(QPointF(+10.0, 0));
         repaint();
         break;
 
     case Qt::Key_D:
-        worldView->moveScreen(QPoint(-10, 0));
+        worldView->moveScreen(QPointF(-10.0, 0));
         repaint();
         break;
 
     case Qt::Key_W:
-        worldView->moveScreen(QPoint(0, +10));
+        worldView->moveScreen(QPointF(0, +10.0));
         repaint();
         break;
 
     case Qt::Key_S:
-        worldView->moveScreen(QPoint(0, -10));
+        worldView->moveScreen(QPointF(0, -10.0));
         repaint();
         break;
 

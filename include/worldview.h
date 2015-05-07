@@ -1,7 +1,6 @@
 #ifndef WORLDVIEW_H
 #define WORLDVIEW_H
 
-#include <QPoint>
 #include <QPointF>
 #include <QRectF>
 #include <QDebug>
@@ -9,8 +8,8 @@
 class WorldView final
 {
 public:
-    WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
-              int screenLeft, int screenRight, int screenTop, int screenBottom,
+    WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBottom,
+              qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom,
               qreal scale);
     WorldView(const WorldView &) = default;
     WorldView &operator=(const WorldView &) = default;
@@ -18,11 +17,11 @@ public:
     WorldView &operator =(WorldView &&) = default;
     ~WorldView() = default;
 
-    void moveScreen(QPoint screenShift);
+    void moveScreen(QPointF screenShift);
 
-    void moveScreen(int x, int y)
+    void moveScreen(qreal x, qreal y)
     {
-        moveScreen(QPoint(x, y));
+        moveScreen(QPointF(x, y));
     }
 
     void decreaseScale();
@@ -43,9 +42,9 @@ public:
     QRectF transformToScreenCordinates(QRectF rect)const; //by value semantic is essential
     QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
-    int mapLeft, mapRight, mapTop, mapBottom;
-    int screenLeft, screenRight, screenTop, screenBottom;
-    QPoint currentCenter; //in map coordinate
+    qreal mapLeft, mapRight, mapTop, mapBottom;
+    qreal screenLeft, screenRight, screenTop, screenBottom;
+    QPointF currentCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
 };
