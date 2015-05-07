@@ -3,6 +3,8 @@
 
 #include <QPoint>
 #include <QPointF>
+#include <QRectF>
+#include <QDebug>
 
 class WorldView final
 {
@@ -28,25 +30,10 @@ public:
 
     const qreal &getScale() const {return scale;}
 
-    QPointF getNW() const
-    {
-        return QPointF(screenLeft, screenTop);
-    }
-
-    QPointF getNE() const
-    {
-        return QPointF(screenRight, screenTop);
-    }
-
-    QPointF getSW() const
-    {
-        return QPointF(screenLeft, screenBottom);
-    }
-
-    QPointF getSE() const
-    {
-        return QPointF(screenRight, screenBottom);
-    }
+    QPointF getNW() const;
+    QPointF getNE() const;
+    QPointF getSW() const;
+    QPointF getSE() const;
 private:
     int mapLeft, mapRight, mapTop, mapBottom;
     int screenLeft, screenRight, screenTop, screenBottom;

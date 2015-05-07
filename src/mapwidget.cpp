@@ -55,6 +55,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
     qDebug()<< "coordinate";
     qDebug()<<"nw: " << worldView->getNW() << ", se: " << worldView->getSE();
+    qDebug()<<"scale: "<<worldView->getScale();
 
     auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0));
     auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0));
@@ -95,11 +96,27 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_A:
+        worldView->moveScreen(QPoint(-10,0));
+        repaint();
+        break;
+    case Qt::Key_D:
+        worldView->moveScreen(QPoint(+10,0));
+        repaint();
+        break;
+    case Qt::Key_W:
+        worldView->moveScreen(QPoint(0,+10));
+        repaint();
+        break;
+    case Qt::Key_S:
+        worldView->moveScreen(QPoint(0,-10));
+        repaint();
+        break;
+    case Qt::Key_Down:
         worldView->increaseScale();
         repaint();
         break;
 
-    case Qt::Key_D:
+    case Qt::Key_Up:
         worldView->decreaseScale();
         repaint();
         break;

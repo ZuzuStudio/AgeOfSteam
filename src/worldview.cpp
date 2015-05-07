@@ -1,5 +1,6 @@
 #include "../include/worldview.h"
 #include <algorithm>
+#include <QDebug>
 
 using namespace std;
 
@@ -27,15 +28,21 @@ WorldView::WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
     mapRight(mapRight),
     mapTop(mapTop),
     mapBottom(mapBottom),
+    screenLeft(screenLeft),
+    screenRight(screenRight),
+    screenTop(screenTop),
+    screenBottom(screenBottom),
     currentCenter((mapLeft + mapRight) / 2, (mapTop + mapBottom) / 2),
     scale(scale),
     maximalScale(10.0)// TODO without magic number
 {
-    auto horizontalMinimalScale = (qreal)(mapRight - mapLeft)
-                                  / (qreal)(screenRight - screenLeft);
-    auto verticalMinimalScale = (qreal)(mapTop - mapBottom)
-                                / (qreal)(screenTop - screenBottom);
+    auto horizontalMinimalScale = (qreal)(this->screenRight - this->screenLeft)
+                                  / (qreal)(this->mapRight - this->mapLeft);
+
+    auto verticalMinimalScale = (qreal)(this->screenTop - this->screenBottom)
+                                / (qreal)(this->mapTop - this->mapBottom);
     minimalScale = max(horizontalMinimalScale, verticalMinimalScale);
+    qDebug() << "minimal scale" << minimalScale;
 }
 
 void WorldView::moveScreen(QPoint screenShift)
@@ -84,4 +91,28 @@ void WorldView::increaseScale()
         scale = maximalScale;
     else
         scale = futureScale;
+}
+
+QPointF WorldView::getNW() const
+{
+    return QPointF(currentCenter.x() + screenLeft / scale,
+                   currentCenter.y() + screenTop / scale);
+}
+
+QPointF WorldView::getNE() const
+{
+    return QPointF(currentCenter.x() + screenRight / scale,
+                   currentCenter.y() + screenTop / scale);
+}
+
+QPointF WorldView::getSW() const
+{
+    return QPointF(currentCenter.x() + screenLeft / scale,
+                   currentCenter.y() + screenBottom / scale);
+}
+
+QPointF WorldView::getSE() const
+{
+    return QPointF(currentCenter.x() + screenRight / scale,
+                   currentCenter.y() + screenBottom / scale);
 }
