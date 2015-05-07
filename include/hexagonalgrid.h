@@ -21,8 +21,11 @@ public:
 
     QRectF tilingBox(int columnIndex, int rowIndex)const
     {
-        return QRectF(northWestCorner(columnIndex, rowIndex),
-                      QSizeF(2.0 * floatHexagonSmallRadius, 2.0 * floatHexagonBigRadius));
+        QRectF result(0.0, 0.0,
+                      2.0 * floatHexagonSmallRadius,
+                      2.0 * floatHexagonBigRadius);
+        result.moveCenter(cellCenter(columnIndex, rowIndex));
+        return result;
     }
 
     QPoint indices(QPointF point, QPointF directionToView)const;

@@ -47,14 +47,14 @@ WorldView::WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
 
 void WorldView::moveScreen(QPoint screenShift)
 {
-    qDebug() << "screenShift" << screenShift;
+    //qDebug() << "screenShift" << screenShift;
     QPoint mapShift = screenShift / scale;
-    qDebug() << "mapShift" << mapShift;
+    //qDebug() << "mapShift" << mapShift;
     int boxLeft = mapLeft - (currentCenter.x() + screenLeft / scale);
     int boxRight = mapRight - (currentCenter.x() + screenRight / scale);
     int boxTop = mapTop - (currentCenter.y() + screenTop / scale);
     int boxBottom = mapBottom - (currentCenter.y() + screenBottom / scale);
-    qDebug() << "move box" << boxLeft << boxRight << boxTop << boxBottom;
+    //qDebug() << "move box" << boxLeft << boxRight << boxTop << boxBottom;
     int sector = 0;
     sector += mapShift.x() < boxLeft ? -1 : (mapShift.x() > boxRight ? 1 : 0);
     sector += mapShift.y() < boxBottom ? -3 : (mapShift.y() > boxTop ? 3 : 0);
@@ -102,7 +102,7 @@ void WorldView::decreaseScale()
 
     if(futureScale > minimalScale)
     {
-        auto minimalSimpleScale =
+        /*auto minimalSimpleScale =
             max(max((qreal)screenLeft / (mapLeft - currentCenter.x()),
                     (qreal)screenRight / (mapRight - currentCenter.x())),
                 max((qreal)screenTop / (mapTop - currentCenter.y()),
@@ -115,7 +115,7 @@ void WorldView::decreaseScale()
                                 oneWay<pos>(screenTop - mapTop)
                                 + oneWay<pos>(screenBottom - mapBottom));
             currentCenter += shift;
-        }
+        }*/
 
         scale = futureScale;
     }
@@ -165,14 +165,20 @@ QPointF WorldView::transformToMapCordinates(const QPointF &point) const
 
 QRectF WorldView::transformToScreenCordinates(QRectF rect) const
 {
-    rect.moveCenter(transformToScreenCordinates(rect.center()));
-    rect.setSize(rect.size() * scale);
+    qreal adjust = 1.0;
+    QPointF center = rect.center();
+    QSizeF size(rect.size() * scale);
+    size.rwidth() += adjust;
+    size.rheight() += adjust;
+    rect.setSize(size);
+    rect.moveCenter(transformToScreenCordinates(center));
     return rect;
 }
 
 QRectF WorldView::transformToMapCordinates(QRectF rect) const
 {
-    rect.moveCenter(transformToMapCordinates(rect.center()));
+    QPointF center = rect.center();
     rect.setSize(rect.size() / scale);
+    rect.moveCenter(transformToMapCordinates(center));
     return rect;
 }
