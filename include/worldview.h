@@ -32,18 +32,23 @@ public:
         return scale;
     }
 
-    QPointF getNW() const;
-    QPointF getNE() const;
-    QPointF getSW() const;
-    QPointF getSE() const;
+    QPointF getNW() const
+    {
+        return transformToMapCordinates(screenNW);
+    }
+
+    QPointF getSE() const
+    {
+        return transformToMapCordinates(screenSE);
+    }
 
     QPointF transformToScreenCordinates(const QPointF &point)const;
     QPointF transformToMapCordinates(const QPointF &point)const;
-    QRectF transformToScreenCordinates(QRectF rect)const; //by value semantic is essential
+    QRectF transformToScreenCordinates(QRectF rect, qreal adjust = 1.0)const; //by value semantic is essential
     QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
-    qreal mapLeft, mapRight, mapTop, mapBottom;
-    qreal screenLeft, screenRight, screenTop, screenBottom;
+    QPointF mapNW, mapSE;
+    QPointF screenNW, screenSE;
     QPointF currentCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
