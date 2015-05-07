@@ -3,6 +3,7 @@
 
 #include <QPointF>
 #include <QPoint>
+#include <QRectF>
 
 class HexagonalGrid
 {
@@ -16,6 +17,12 @@ public:
     {
         return cellCenter(columnIndex, rowIndex)
                - QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
+    }
+
+    QRectF tilingBox(int columnIndex, int rowIndex)const
+    {
+        return QRectF(northWestCorner(columnIndex, rowIndex),
+                      QSizeF(2.0 * floatHexagonSmallRadius, 2.0 * floatHexagonBigRadius));
     }
 
     QPoint indices(QPointF point, QPointF directionToView)const;
@@ -46,7 +53,6 @@ private:
     qreal floatHexagonBigRadius, floatHexagonSmallRadius;
     qreal horizontalStep, verticalStep, oddShift;
     int left, right, top, bottom;
-
 };
 
 #endif // HEXAGONALGRID_H
