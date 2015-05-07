@@ -11,15 +11,21 @@ MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
     imageBufer(nullptr)
 {
     grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
-    worldView = new WorldView(grid->leftMapBorder(),grid->rightMapBorder(),
-                              grid->topMapBorder(),grid->bottomMapBorder(),
-                              -this->size().width()/2, this->size().width()/2,
-                              this->size().height()/2, -this->size().height()/2,
+    worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
+                              grid->topMapBorder(), grid->bottomMapBorder(),
+                              -this->size().width() / 2, this->size().width() / 2,
+                              this->size().height() / 2, -this->size().height() / 2,
                               1.0);
     imageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
-    auto lodHill = new LevelOfDetalisation(worldView->getScale());
-    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.0);
 
+    auto lodSea = new LevelOfDetalisation(worldView->getScale());
+    lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
+    terrainTypes.push_back(lodSea);
+
+    auto lodHill = new LevelOfDetalisation(worldView->getScale());
+    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
+    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.25);
+    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
 //    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
@@ -40,8 +46,10 @@ MapWidget::~MapWidget()
 {
     delete imageBufer;
     imageBufer = nullptr;
-    for(auto it: terrainTypes)
+
+    for(auto it : terrainTypes)
         delete it;
+
     delete worldView;
     worldView = nullptr;
     delete grid;
@@ -52,16 +60,31 @@ void MapWidget::paintEvent(QPaintEvent *event)
 {
     QPainter buferPainter(imageBufer);
     buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
+    buferPainter.translate(width() / 2.0, height() / 2.0);
 
-    qDebug()<< "coordinate";
-    qDebug()<<"nw: " << worldView->getNW() << ", se: " << worldView->getSE();
-    qDebug()<<"scale: "<<worldView->getScale();
+    qDebug() << "coordinate";
+    qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
+    qDebug() << "scale: " << worldView->getScale();
 
-    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0));
-    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0));
+    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0))-QPoint(1,1);
+    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0))+QPoint(1,1);
 
-    qDebug()<< "index";
-    qDebug()<<"nw: " << nwIndex << ", se: " << seIndex;
+    qDebug() << "index";
+    qDebug() << "nw: " << nwIndex << ", se: " << seIndex;
+
+    // TODO in this part switch beetwen cluster and svg
+    for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
+        for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
+        {
+            //qDebug() << "cl: " << column << "rw: " << row;
+            //qDebug() << "cell " << model.cell(column, row);
+            //qDebug() << "LOD: " << terrainTypes[model.cell(column, row)];
+            //qDebug() << "renderer" << terrainTypes[model.cell(column, row)]->renderer();
+            terrainTypes[model.cell(column, row)]
+            ->renderer()
+            ->render(&buferPainter,
+                     worldView->transformToScreenCordinates(grid->tilingBox(column, row)));
+        }
 
     QPainter mainPainter(this);
     mainPainter.drawImage(0, 0, *imageBufer);
@@ -93,24 +116,28 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
 void MapWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key())
+    switch(event->key())
     {
     case Qt::Key_A:
-        worldView->moveScreen(QPoint(-10,0));
+        worldView->moveScreen(QPoint(+10, 0));
         repaint();
         break;
+
     case Qt::Key_D:
-        worldView->moveScreen(QPoint(+10,0));
+        worldView->moveScreen(QPoint(-10, 0));
         repaint();
         break;
+
     case Qt::Key_W:
-        worldView->moveScreen(QPoint(0,+10));
+        worldView->moveScreen(QPoint(0, +10));
         repaint();
         break;
+
     case Qt::Key_S:
-        worldView->moveScreen(QPoint(0,-10));
+        worldView->moveScreen(QPoint(0, -10));
         repaint();
         break;
+
     case Qt::Key_Down:
         worldView->increaseScale();
         repaint();

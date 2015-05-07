@@ -47,15 +47,53 @@ WorldView::WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
 
 void WorldView::moveScreen(QPoint screenShift)
 {
+    qDebug() << "screenShift" << screenShift;
     QPoint mapShift = screenShift / scale;
+    qDebug() << "mapShift" << mapShift;
     int boxLeft = mapLeft - (currentCenter.x() + screenLeft / scale);
     int boxRight = mapRight - (currentCenter.x() + screenRight / scale);
     int boxTop = mapTop - (currentCenter.y() + screenTop / scale);
-    int boxBottom = mapLeft - (currentCenter.y() + screenBottom / scale);
-    qreal quotient =
-        min(min(boxRight, max(boxLeft, mapShift.x())) / (qreal)mapShift.x(),
-            min(boxTop, max(boxBottom, mapShift.y())) / (qreal)mapShift.y());
-    currentCenter += quotient * mapShift;
+    int boxBottom = mapBottom - (currentCenter.y() + screenBottom / scale);
+    qDebug() << "move box" << boxLeft << boxRight << boxTop << boxBottom;
+    int sector = 0;
+    sector += mapShift.x() < boxLeft ? -1 : (mapShift.x() > boxRight ? 1 : 0);
+    sector += mapShift.y() < boxBottom ? -3 : (mapShift.y() > boxTop ? 3 : 0);
+    QPoint boxedShift(0, 0);
+
+
+    switch(sector)
+    {
+    case -4:// SW
+        break;
+
+    case -3:// S
+
+        break;
+
+    case -2:// SE
+        break;
+
+    case -1:// W
+        break;
+
+    case 0:// center
+        boxedShift = mapShift;
+        break;
+
+    case 1:// E
+        break;
+
+    case 2:// NW
+        break;
+
+    case 3:// N
+        break;
+
+    case 4:// NE
+        break;
+    }
+
+    currentCenter += boxedShift;
 }
 
 void WorldView::decreaseScale()
