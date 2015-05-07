@@ -13,7 +13,7 @@ public:
     ~LevelOfDetalisation() noexcept;
 
     void addRenderer(const QString &fileName, qreal downLimit);
-    const QSvgRenderer *renderer() const noexcept;
+    QSvgRenderer *renderer() noexcept;
 private:
     const qreal &currentScale;
     std::vector<QSvgRenderer *> renderers;

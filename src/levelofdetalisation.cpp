@@ -29,7 +29,7 @@ void LevelOfDetalisation::addRenderer(const QString &fileName, qreal downLimit)
     assert(renderers.size() == limits.size());
 }
 
-const QSvgRenderer *LevelOfDetalisation::renderer() const noexcept
+QSvgRenderer *LevelOfDetalisation::renderer() noexcept
 {
     assert(renderers.size() == limits.size());
     auto size = limits.size();
@@ -39,7 +39,7 @@ const QSvgRenderer *LevelOfDetalisation::renderer() const noexcept
 
     size_t i = 0;
 
-    while(limits[i] > currentScale && i < size)
+    while(limits[i] < currentScale && i < size)
         ++i;
 
     return renderers[i - 1];
