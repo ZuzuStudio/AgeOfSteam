@@ -27,14 +27,6 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
-    qDebug() << "north west corner";
-    qDebug() << "in map";
-    qDebug() << grid->cellCenter(0, 0);
-    qDebug() << grid->cellCenter(1, 0);
-    qDebug() << "in screen";
-    qDebug() << worldView->transformToScreenCordinates(grid->cellCenter(0, 0));
-    qDebug() << worldView->transformToScreenCordinates(grid->cellCenter(1, 0));
-
     // NOTE maybe all controll and interaction place in other class
     //setAttribute(Qt::WA_AcceptTouchEvents);
 }
@@ -58,24 +50,13 @@ void MapWidget::paintEvent(QPaintEvent *event)
     QPainter buferPainter(imageBufer);
     buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
 
-    qDebug() << "coordinate";
-    qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
-    qDebug() << "scale: " << worldView->getScale();
-
     auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
     auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
-
-    qDebug() << "index";
-    qDebug() << "nw: " << nwIndex << ", se: " << seIndex;
 
     // TODO in this part switch beetwen cluster and svg
     for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
         for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
         {
-            //qDebug() << "cl: " << column << "rw: " << row;
-            //qDebug() << "cell " << model.cell(column, row);
-            //qDebug() << "LOD: " << terrainTypes[model.cell(column, row)];
-            //qDebug() << "renderer" << terrainTypes[model.cell(column, row)]->renderer();
             terrainTypes[model.cell(column, row)]
             ->renderer()
             ->render(&buferPainter,

@@ -26,11 +26,6 @@ HexagonalGrid::HexagonalGrid(int cols, int rows, int hexagonBigRadius):
     right = halfWidth;
     top = halfHeight;
     bottom = -halfHeight;
-    qDebug() << "cl: " << cols << ", rw: " << rows;
-    qDebug() << "R: " << floatHexagonBigRadius << "r: " << floatHexagonSmallRadius;
-    qDebug() << "hs: " << horizontalStep << ", vs: " << verticalStep;
-    qDebug() << "grid borders:";
-    qDebug() << left << right << top << bottom;
 }
 
 QPointF HexagonalGrid::cellCenter(int columnIndex, int rowIndex) const
