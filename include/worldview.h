@@ -17,6 +17,8 @@ public:
     WorldView &operator =(WorldView &&) = default;
     ~WorldView() = default;
 
+    void setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom);
+
     void moveScreen(QPointF screenShift);
 
     void moveScreen(qreal x, qreal y)

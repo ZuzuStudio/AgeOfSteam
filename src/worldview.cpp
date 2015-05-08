@@ -19,24 +19,23 @@ WorldView::WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBotto
                      qreal scale):
     mapNW(mapLeft, mapTop),
     mapSE(mapRight, mapBottom),
-    screenNW(screenLeft, screenTop),
-    screenSE(screenRight, screenBottom),
     mapViewCenter((mapNW + mapSE) / 2.0),
-    screenViewCenter((screenNW + screenSE) / 2.0),
     scale(scale),
     maximalScale(10.0)// TODO without magic number
 {
-    qDebug() << "screenNW" << screenNW;
-    qDebug() << "screenSE" << screenSE;
-    qDebug() << "screenVC" << screenViewCenter;
+    setScreenParameter(screenLeft, screenRight, screenTop, screenBottom);
+}
+
+void WorldView::setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom)
+{
+    screenNW = QPointF(screenLeft, screenTop);
+    screenSE = QPointF(screenRight, screenBottom);
+    screenViewCenter = (screenNW + screenSE) / 2.0;
     auto screenDiagonal = screenNW - screenSE;
-    qDebug() << "screenDiagonal" << screenDiagonal;
     auto mapDiagonal = mapNW - mapSE;
-    qDebug() << "mapDiagonal" << mapDiagonal;
     auto diagonalFactor = directDiv(screenDiagonal,  mapDiagonal);
-    qDebug() << "diagonal factor" << diagonalFactor;
     minimalScale = max(diagonalFactor.x(), -diagonalFactor.y());
-    qDebug() << "minimal scale" << minimalScale;
+    restoreCorrectness();
 }
 
 void WorldView::moveScreen(QPointF screenShift)

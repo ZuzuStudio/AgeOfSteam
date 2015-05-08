@@ -22,8 +22,9 @@ public:
 
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     //bool event(QEvent *event);
 private:
     LogicalMap &model;

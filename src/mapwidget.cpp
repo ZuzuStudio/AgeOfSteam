@@ -110,6 +110,18 @@ void MapWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
+void MapWidget::resizeEvent(QResizeEvent *event)
+{
+    auto newImageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+    delete imageBufer;
+    imageBufer = newImageBufer;
+    newImageBufer = nullptr;
+
+    worldView->setScreenParameter(0.0, width(), 0.0, height());
+
+    Q_UNUSED(event);
+}
+
 void MapWidget::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
