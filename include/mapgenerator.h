@@ -7,9 +7,9 @@
 #include <QFile>
 #include <QTextStream>
 //#include "hexagonalgrid.h"
-#include "include/arraygrid.h"
+#include "include/logicalmap.h"
 
-enum Territori :unsigned {Land, Sea};
+enum Territori : unsigned {Land, Sea};
 
 class MapGenerator
 {
@@ -18,10 +18,10 @@ private:
     ~MapGenerator();
 
 public:
-    static ArrayGrid *generate(int width, int height);
+    static LogicalMap *generate(int width, int height);
 
 private:
-    static void makeFile(Territori ** map, int width, int height, QString filename= "map_test.txt");
+    static void makeFile(Territori **map, int width, int height, QString filename = "map_test.txt");
 };
 
 #endif // MAPGENERATOR_H

@@ -1,9 +1,8 @@
 #include "../include/mapwidget.h"
-#include "../include/mapgenerator.h"
 
 #include <QDebug>
 
-MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
+MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     QWidget(parent),
     model(model),
     grid(nullptr),
@@ -28,18 +27,8 @@ MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
-//    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
-//                                this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
-    //---------------//
-    //connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
-    setAttribute(Qt::WA_AcceptTouchEvents);
-
-//    leftTop = window()->rect().topLeft();
-//    rightTop = window()->rect().topRight();
-//    rightBottom = window()->rect().bottomRight();
-//    leftBottom = window()->rect().bottomLeft();
-//    calculateCenter();
-
+    // NOTE maybe all controll and interaction place in other class
+    //setAttribute(Qt::WA_AcceptTouchEvents);
 }
 
 MapWidget::~MapWidget()
@@ -66,8 +55,8 @@ void MapWidget::paintEvent(QPaintEvent *event)
     qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
     qDebug() << "scale: " << worldView->getScale();
 
-    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0))-QPoint(1,1);
-    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0))+QPoint(1,1);
+    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
+    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
 
     qDebug() << "index";
     qDebug() << "nw: " << nwIndex << ", se: " << seIndex;

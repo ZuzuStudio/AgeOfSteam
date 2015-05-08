@@ -10,15 +10,14 @@ TODO: license here
 
 #include "../include/mapwidget.h"
 #include "../include/mainwindow.h"
-#include "../include/arraygrid.h"
+#include "../include/logicalmap.h"
 #include <QDebug>
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    ArrayGrid model(21,21);
+    LogicalMap model(21, 21);
     MapWidget window(model);
-    //window.setScale(0.333);
     window.show();
 
     return app.exec();

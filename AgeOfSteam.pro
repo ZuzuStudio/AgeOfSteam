@@ -21,25 +21,21 @@ TEMPLATE = app
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/graficitem.cpp \
     src/levelofdetalisation.cpp \
     src/mapwidget.cpp \
-    src/hexagon.cpp \
     src/hexagonalgrid.cpp \
     src/mapgenerator.cpp \
-    src/arraygrid.cpp \
-    src/worldview.cpp
+    src/worldview.cpp \
+    src/logiaclmap.cpp
 
 HEADERS += \
     include/mainwindow.h \
-    include/graficitem.h \
     include/levelofdetalisation.h \
     include/mapwidget.h \
-    include/hexagon.h \
     include/hexagonalgrid.h \
     include/mapgenerator.h \
-    include/arraygrid.h \
-    include/worldview.h
+    include/worldview.h \
+    include/logicalmap.h
 
 RESOURCES += \
     res/res.qrc

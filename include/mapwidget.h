@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include <vector>
-#include "include/arraygrid.h"
+#include "include/logicalmap.h"
 #include "include/hexagonalgrid.h"
 #include "include/worldview.h"
 #include "include/levelofdetalisation.h"
@@ -15,37 +15,22 @@
 
 class MapWidget : public QWidget
 {
-        Q_OBJECT
-    public:
-        explicit MapWidget(ArrayGrid &model, QWidget *parent = nullptr);
-        //void setScale(double scale);
-        ~MapWidget();
+    Q_OBJECT
+public:
+    explicit MapWidget(LogicalMap &model, QWidget *parent = nullptr);
+    ~MapWidget();
 
 
-    protected:
-        void paintEvent(QPaintEvent *event);
-        void keyPressEvent(QKeyEvent *event);
-        //bool event(QEvent *event);
-
-
-    private:
-        ArrayGrid &model;
-        HexagonalGrid *grid;
-        WorldView *worldView;
-        std::vector<LevelOfDetalisation *> terrainTypes;
-        QImage *imageBufer;
-        /*HexagonalGrid * HG;
-        QPoint leftTop, rightTop, rightBottom, leftBottom, center;
-        void calculateCenter();
-
-        //---translating around point
-        QPoint origin;
-        QPoint d_origin;
-        QPoint clickPos;
-
-        QSvgRenderer *renderer;
-        QImage *image;
-        double scale;*/
+protected:
+    void paintEvent(QPaintEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    //bool event(QEvent *event);
+private:
+    LogicalMap &model;
+    HexagonalGrid *grid;
+    WorldView *worldView;
+    std::vector<LevelOfDetalisation *> terrainTypes; // NOTE maybe place in other class
+    QImage *imageBufer;
 };
 
 #endif // MAPWIDGET_H
