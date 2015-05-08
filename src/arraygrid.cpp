@@ -1,46 +1,63 @@
 #include "include/arraygrid.h"
+#include <assert.h>
 
-ArrayGrid::ArrayGrid(unsigned **array, unsigned rows, unsigned columns):
-    array(array), rows(rows), columns(columns)
-{}
-
-ArrayGrid::ArrayGrid(unsigned rows, unsigned columns):
-    rows(rows), columns(columns)
+ArrayGrid::ArrayGrid(TerrainType **array, int rows, int columns):
+    array(nullptr), mColumns(columns), mRows(rows)
 {
-    array = new unsigned*[rows];
-    for(unsigned i = 0; i < rows; ++i)
-    {
-        array[i] = new unsigned[columns];
-    }
+    assert(columns > 0);
+    assert(rows > 0);
+    allocateMemory();
+
+    for(int column = 0; column < mColumns; ++column)
+        for(int row = 0; row < mRows; ++row)
+            this->array[column][row] = array[column][row];
 }
 
-int ArrayGrid::get(unsigned row, unsigned column)
+ArrayGrid::ArrayGrid(int columns, int rows):
+    array(nullptr), mColumns(columns), mRows(rows)
 {
-    return array[row][column];
+    assert(columns > 0);
+    assert(rows > 0);
+    allocateMemory();
+
+    for(int column = 0; column < mColumns; ++column)
+        for(int row = 0; row < mRows; ++row)
+            this->array[column][row] = HILL;
 }
 
-void ArrayGrid::set(int value, unsigned row, unsigned column)
+TerrainType ArrayGrid::cell(int column, int row)
 {
-    array[row][column] = value;
+    if(column < 0 || row < 0 || column >= mColumns || row >= mRows)
+        return SEA;
+
+    return array[column][row];
 }
 
-int ArrayGrid::getRows()
+void ArrayGrid::setCell(TerrainType value, int row, int column)
 {
-    return rows;
-}
-
-int ArrayGrid::getColumns()
-{
-    return columns;
+    if(column >= 0 && row >= 0 && column < mColumns && row < mRows)
+        array[column][row] = value;
 }
 
 ArrayGrid::~ArrayGrid()
 {
-    for(unsigned i = 0; i < rows; ++i)
+    for(int column = 0; column < mColumns; ++column)
     {
-        delete [] array[i];
+        delete [] array[column];
+        array[column] = nullptr;
     }
+
     delete [] array;
     array = nullptr;
+}
+
+void ArrayGrid::allocateMemory()
+{
+    array = new TerrainType*[mColumns]();
+
+    for(int column = 0; column < mColumns; ++column)
+    {
+        array[column] = new TerrainType[mRows];
+    }
 }
 

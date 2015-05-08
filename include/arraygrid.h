@@ -1,26 +1,26 @@
 #ifndef ARRAYGRID_H
 #define ARRAYGRID_H
 
+enum TerrainType{SEA, HILL};
+
+// TODO rename the class
 
 class ArrayGrid
 {
-private:
-    unsigned **array;
-    unsigned rows, columns;
-    //const int number_of_hex_corners = 6;
-    //const int cell_radius = 40;
-
 public:
-    ArrayGrid(unsigned **array, unsigned rows, unsigned columns);
-    ArrayGrid(unsigned rows, unsigned columns);
-    int get(unsigned row, unsigned column);
-    void set(int value, unsigned row, unsigned column);
-    int getRows();
-    int getColumns();
+    ArrayGrid(TerrainType **array, int columns, int rows);
+    ArrayGrid(int columns, int rows);//temporary candidate for deletetion
+    TerrainType cell(int column, int row);
+    void setCell(TerrainType value, int row, int column);
+    int rows() const noexcept {return mRows;}
+    int columns() const noexcept {return mColumns;}
 
-    ~ArrayGrid();
-    //int ** createGrid();
+    ~ArrayGrid() noexcept;
+private:
+    TerrainType **array;
+    int mColumns, mRows;
 
+    void allocateMemory();
 };
 
 #endif // ARRAYGRID_H

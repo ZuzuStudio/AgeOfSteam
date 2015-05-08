@@ -1,84 +1,150 @@
 #include "../include/mapwidget.h"
 #include "../include/mapgenerator.h"
 
-MapWidget::MapWidget(QWidget *parent) :
+#include <QDebug>
+
+MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
     QWidget(parent),
-    HG(nullptr),
-    leftTop(0, 0),
-    rightTop(0, 0),
-    rightBottom(0, 0),
-    leftBottom(0, 0),
-    center(0, 0),
-    origin(0, 0),
-    renderer(nullptr),
-    image(nullptr),
-    scale(0)
+    model(model),
+    grid(nullptr),
+    worldView(nullptr),
+    imageBufer(nullptr)
 {
-    image  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
-    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
-                                this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
+    grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
+    worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
+                              grid->topMapBorder(), grid->bottomMapBorder(),
+                              -this->size().width() / 2, this->size().width() / 2,
+                              this->size().height() / 2, -this->size().height() / 2,
+                              1.0);
+    imageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+
+    auto lodSea = new LevelOfDetalisation(worldView->getScale());
+    lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
+    terrainTypes.push_back(lodSea);
+
+    auto lodHill = new LevelOfDetalisation(worldView->getScale());
+    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
+    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.25);
+    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
+    terrainTypes.push_back(lodHill);
+
+//    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
+//                                this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
     //---------------//
     //connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
     setAttribute(Qt::WA_AcceptTouchEvents);
 
-    leftTop = window()->rect().topLeft();
-    rightTop = window()->rect().topRight();
-    rightBottom = window()->rect().bottomRight();
-    leftBottom = window()->rect().bottomLeft();
-    calculateCenter();
+//    leftTop = window()->rect().topLeft();
+//    rightTop = window()->rect().topRight();
+//    rightBottom = window()->rect().bottomRight();
+//    leftBottom = window()->rect().bottomLeft();
+//    calculateCenter();
 
-    HG = new HexagonalGrid(scale, leftTop, rightTop, rightBottom, leftBottom);
-    HG->drawRastr(renderer);
 }
 
 MapWidget::~MapWidget()
 {
-    delete image;
-    image = nullptr;
-    delete HG;
-    HG = nullptr;
+    delete imageBufer;
+    imageBufer = nullptr;
+
+    for(auto it : terrainTypes)
+        delete it;
+
+    delete worldView;
+    worldView = nullptr;
+    delete grid;
+    grid = nullptr;
 }
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
-    QPainter p(this);
+    QPainter buferPainter(imageBufer);
+    buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
+    buferPainter.translate(width() / 2.0, height() / 2.0);
 
-    if (scale < 0.35) // full map rastr
-    {
-        p.scale(scale, scale);
-        HG->setScale(scale);
-        //HG->draw(&p);
-        //HG->gluingTogetherClasters(&p);
-    }
-    else // we need to show svg for low detalised texture
-    {
-        if (image->size() != this->size())
+    qDebug() << "coordinate";
+    qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
+    qDebug() << "scale: " << worldView->getScale();
+
+    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0))-QPoint(1,1);
+    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0))+QPoint(1,1);
+
+    qDebug() << "index";
+    qDebug() << "nw: " << nwIndex << ", se: " << seIndex;
+
+    // TODO in this part switch beetwen cluster and svg
+    for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
+        for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
         {
-            delete image;
-            image = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+            //qDebug() << "cl: " << column << "rw: " << row;
+            //qDebug() << "cell " << model.cell(column, row);
+            //qDebug() << "LOD: " << terrainTypes[model.cell(column, row)];
+            //qDebug() << "renderer" << terrainTypes[model.cell(column, row)]->renderer();
+            terrainTypes[model.cell(column, row)]
+            ->renderer()
+            ->render(&buferPainter,
+                     worldView->transformToScreenCordinates(grid->tilingBox(column, row)));
         }
 
-        QPainter imagePainter(image);
-        imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-        HG->setScale(scale);
-        HG->drawSVG(renderer, &imagePainter);
-        //-------------//
-        p.drawImage(0, 0, *image);
-    }
+    QPainter mainPainter(this);
+    mainPainter.drawImage(0, 0, *imageBufer);
+
+//    if (scale < 0.35) // full map rastr
+//    {
+//        p.scale(scale, scale);
+//        HG->setScale(scale);
+//        //HG->draw(&p);
+//        //HG->gluingTogetherClasters(&p);
+//    }
+//    else // we need to show svg for low detalised texture
+//    {
+//        if (image->size() != this->size())
+//        {
+//            delete image;
+//            image = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+//        }
+
+//        QPainter imagePainter(image);
+//        imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
+//        HG->setScale(scale);
+//        HG->drawSVG(renderer, &imagePainter);
+//        //-------------//
+//        p.drawImage(0, 0, *image);
+//    }
     Q_UNUSED(event);
 }
 
 void MapWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key())
+    switch(event->key())
     {
     case Qt::Key_A:
-        scale *= 1.05;
+        worldView->moveScreen(QPointF(+10.0, 0));
         repaint();
         break;
 
     case Qt::Key_D:
-        scale /= 1.05;
+        worldView->moveScreen(QPointF(-10.0, 0));
+        repaint();
+        break;
+
+    case Qt::Key_W:
+        worldView->moveScreen(QPointF(0, +10.0));
+        repaint();
+        break;
+
+    case Qt::Key_S:
+        worldView->moveScreen(QPointF(0, -10.0));
+        repaint();
+        break;
+
+    case Qt::Key_Down:
+        worldView->increaseScale();
+        repaint();
+        break;
+
+    case Qt::Key_Up:
+        worldView->decreaseScale();
         repaint();
         break;
 
@@ -88,91 +154,80 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MapWidget::setScale(double scale)
-{
-    this->scale = scale;
-}
-
-void MapWidget::calculateCenter()
-{
-    center.rx() = (rightTop.rx() - leftTop.rx()) / 2;
-    center.ry() = (rightBottom.ry() - rightTop.ry()) / 2;
-}
-
 /**
  * IOS & Android compability
 */
-bool MapWidget::event(QEvent *event)
-{
-    switch (event->type())
-    {
-    case QEvent::MouseButtonPress:
-    {
-        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
-        //d_origin = current_event->pos();
-        clickPos = current_event->pos();
-    }
-    case QEvent::MouseMove:
-    {
-        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
+//bool MapWidget::event(QEvent *event)
+//{
+//    switch (event->type())
+//    {
+//    case QEvent::MouseButtonPress:
+//    {
+//        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
+//        //d_origin = current_event->pos();
+//        clickPos = current_event->pos();
+//    }
+//    case QEvent::MouseMove:
+//    {
+//        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
 
-        //origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
-        //origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
-        //d_origin = current_event->pos();
-        QPoint current = current_event->pos();
-        HG->addShift(current - clickPos);
-        clickPos = current;
-        update();
-        return true;
-    }
+//        //origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
+//        //origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
+//        //d_origin = current_event->pos();
+//        QPoint current = current_event->pos();
+//        HG->addShift(current - clickPos);
+//        clickPos = current;
+//        update();
+//        return true;
+//    }
 
-    case QEvent::TouchBegin:
-    {
-        QTouchEvent * touchEvent = static_cast<QTouchEvent *>(event);
-        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
-        if(touchPoints.count() == 1)
-        {
-            QTouchEvent::TouchPoint &point = touchPoints.first();
-            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
-        }
-    }
-    case QEvent::TouchUpdate:
-    {
-        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
-        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
+//    case QEvent::TouchBegin:
+//    {
+//        QTouchEvent * touchEvent = static_cast<QTouchEvent *>(event);
+//        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
+//        if(touchPoints.count() == 1)
+//        {
+//            QTouchEvent::TouchPoint &point = touchPoints.first();
+//            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
+//        }
+//    }
+//    case QEvent::TouchUpdate:
+//    {
+//        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+//        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
 
-        if (touchPoints.count() == 1)
-        {
-            const QTouchEvent::TouchPoint &point = touchPoints.first();
-            origin.setX(origin.rx() + (point.pos().rx() - d_origin.rx()) );
-            origin.setY(origin.ry() + (point.pos().ry() - d_origin.ry()) );
-            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
-            update();
-        }
-        else if (touchPoints.count() == 2)
-        {
-            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
-            const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
-            qreal currentScaleFactor =
-                (QLineF(touchPoint0.pos(), touchPoint1.pos()).length()
-                 / QLineF(touchPoint0.startPos(), touchPoint1.startPos()).length());
+//        if (touchPoints.count() == 1)
+//        {
+//            const QTouchEvent::TouchPoint &point = touchPoints.first();
+//            origin.setX(origin.rx() + (point.pos().rx() - d_origin.rx()) );
+//            origin.setY(origin.ry() + (point.pos().ry() - d_origin.ry()) );
+//            d_origin = QPoint((int)point.pos().rx(), (int)point.pos().ry());
+//            update();
+//        }
+//        else if (touchPoints.count() == 2)
+//        {
+//            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+//            const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
+//            qreal currentScaleFactor =
+//                (QLineF(touchPoint0.pos(), touchPoint1.pos()).length()
+//                 / QLineF(touchPoint0.startPos(), touchPoint1.startPos()).length());
 
-            if (currentScaleFactor > 1.0)
-                scale *= 1.02;
-            else
-                scale /= 1.02;
+//            if (currentScaleFactor > 1.0)
+//                scale *= 1.02;
+//            else
+//                scale /= 1.02;
 
-            update();
-        }
+//            update();
+//        }
 
-        return true;
-    }
+//        return true;
+//    }
 
-    case QEvent::TouchEnd:
-    default:
-        break;
-    }
+//    case QEvent::TouchEnd:
+//    default:
+//        break;
+//    }
 
-    return QWidget::event(event);
-}
+//    return QWidget::event(event);
+//}
 

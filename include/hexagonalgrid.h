@@ -1,57 +1,61 @@
 #ifndef HEXAGONALGRID_H
 #define HEXAGONALGRID_H
 
-#include "include/hexagon.h"
-#include "include/worldview.h"
-#include <QSvgRenderer>
-#include <QImage>
-#include <QPainter>
-#include <QDebug>
+#include <QPointF>
+#include <QPoint>
+#include <QRectF>
 
 class HexagonalGrid
 {
-
 public:
+    HexagonalGrid(int cols, int rows, int hexagonBigRadius);
+    //TODO GVI
 
-    HexagonalGrid(qreal scale, QPoint topLeft, QPoint topRight, QPoint bottomRight, QPoint bottomLeft);
-    ~HexagonalGrid();
-    std::vector<QImage> drawRastr(QSvgRenderer * renderer);
-    void drawSVG(QSvgRenderer * renderer, QPainter * painter);
-    void gluingTogetherClasters(QPainter * painter);
-    void setScale(qreal scale);
-    void addShift(int x, int y);
-    void addShift(QPoint pos);
+    QPointF cellCenter(int columnIndex, int rowIndex)const;
+
+    QPointF northWestCorner(int columnIndex, int rowIndex)const
+    {
+        return cellCenter(columnIndex, rowIndex)
+               - QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
+    }
+
+    QRectF tilingBox(int columnIndex, int rowIndex)const
+    {
+        QRectF result(0.0, 0.0,
+                      2.0 * floatHexagonSmallRadius,
+                      2.0 * floatHexagonBigRadius);
+        result.moveCenter(cellCenter(columnIndex, rowIndex));
+        return result;
+    }
+
+    QPoint indices(QPointF point, QPointF directionToView)const;
+
+    int leftMapBorder()const
+    {
+        return left;
+    }
+
+    int rightMapBorder()const
+    {
+        return right;
+    }
+
+    int topMapBorder()const
+    {
+        return top;
+    }
+
+    int bottomMapBorder()const
+    {
+        return bottom;
+    }
 
 private:
-
-    class ArrayGrid
-    {
-    private:
-        int **array;
-        size_t rows, colomns;
-
-    public:
-        ArrayGrid(size_t rows, size_t colomns);
-        ~ArrayGrid();
-        int ** createGrid();
-
-    }* grid;
-
-    void calculateScreenCoordinates();
-
-    QSize image_size;
-    Hexagon *hexagon;
-    qreal scale;
-    int **matrix;
-    std::vector<QImage> painters;
-
-    QPoint shift;
-    QPoint mapLeftTop, mapRightTop, mapRightBottom, mapLeftBottom;
-    QPoint screenLeftTop, screenRightTop, screenRightBottom, screenLeftBottom;
-    WorldView worldView;
-    const size_t numberOfClasters = 25;
-    const size_t sizeOfClaster = 20;  // from now on it is important
-                                     // to use only clusters which size is odd integer
+    int cols, rows;
+    int hexagonBigRadius;
+    qreal floatHexagonBigRadius, floatHexagonSmallRadius;
+    qreal horizontalStep, verticalStep, oddShift;
+    int left, right, top, bottom;
 };
 
 #endif // HEXAGONALGRID_H

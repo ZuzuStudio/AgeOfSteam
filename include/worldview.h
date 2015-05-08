@@ -1,13 +1,15 @@
 #ifndef WORLDVIEW_H
 #define WORLDVIEW_H
 
-#include <QPoint>
+#include <QPointF>
+#include <QRectF>
+#include <QDebug>
 
 class WorldView final
 {
 public:
-    WorldView(int mapLeft, int mapRight, int mapTop, int mapBottom,
-              int screenLeft, int screenRight, int screenTop, int screenBottom,
+    WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBottom,
+              qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom,
               qreal scale);
     WorldView(const WorldView &) = default;
     WorldView &operator=(const WorldView &) = default;
@@ -15,41 +17,39 @@ public:
     WorldView &operator =(WorldView &&) = default;
     ~WorldView() = default;
 
-    void moveScreen(QPoint screenShift);
+    void moveScreen(QPointF screenShift);
 
-    void moveScreen(int x, int y)
+    void moveScreen(qreal x, qreal y)
     {
-        moveScreen(QPoint(x, y));
+        moveScreen(QPointF(x, y));
     }
 
     void decreaseScale();
     void increaseScale();
 
-    qreal getScale() const {return scale;}
-
-    QPoint getNW() const
+    const qreal &getScale() const
     {
-        return QPoint(screenLeft, screenTop);
+        return scale;
     }
 
-    QPoint getNE() const
+    QPointF getNW() const
     {
-        return QPoint(screenRight, screenTop);
+        return transformToMapCordinates(screenNW);
     }
 
-    QPoint getSW() const
+    QPointF getSE() const
     {
-        return QPoint(screenLeft, screenBottom);
+        return transformToMapCordinates(screenSE);
     }
 
-    QPoint getSE() const
-    {
-        return QPoint(screenRight, screenBottom);
-    }
+    QPointF transformToScreenCordinates(const QPointF &point)const;
+    QPointF transformToMapCordinates(const QPointF &point)const;
+    QRectF transformToScreenCordinates(QRectF rect, qreal adjust = 1.0)const; //by value semantic is essential
+    QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
-    int mapLeft, mapRight, mapTop, mapBottom;
-    int screenLeft, screenRight, screenTop, screenBottom;
-    QPoint currentCenter; //in map coordinate
+    QPointF mapNW, mapSE;
+    QPointF screenNW, screenSE;
+    QPointF currentCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
 };
