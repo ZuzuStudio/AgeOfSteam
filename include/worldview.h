@@ -52,6 +52,8 @@ private:
     QPointF mapViewCenter, screenViewCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
+
+    void restoreCorrectness();
 };
 
 #endif // WORLDVIEW_H
