@@ -22,7 +22,12 @@ ArrayGrid::ArrayGrid(int columns, int rows):
 
     for(int column = 0; column < mColumns; ++column)
         for(int row = 0; row < mRows; ++row)
-            this->array[column][row] = HILL;
+            array[column][row] = HILL;
+
+    array[0][0] = SEA;
+    array[1][0] = SEA;
+    array[1][1] = SEA;
+    array[1][2] = SEA;
 }
 
 TerrainType ArrayGrid::cell(int column, int row)
