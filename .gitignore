@@ -5,6 +5,7 @@
 *.[oa]
 *.so
 *.dll
+*build*/
 *[Dd]ebug*/
 *[Rr]elease*/
 .directoty
