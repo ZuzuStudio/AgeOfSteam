@@ -38,14 +38,21 @@ WorldView::WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBotto
     mapSE(mapRight, mapBottom),
     screenNW(screenLeft, screenTop),
     screenSE(screenRight, screenBottom),
-    currentCenter((mapNW + mapSE) / 2.0),
+    mapViewCenter((mapNW + mapSE) / 2.0),
+    screenViewCenter((screenNW + screenSE) / 2.0),
     scale(scale),
     maximalScale(10.0)// TODO without magic number
 {
+    qDebug() << "screenNW" << screenNW;
+    qDebug() << "screenSE" << screenSE;
+    qDebug() << "screenVC" << screenViewCenter;
     auto screenDiagonal = screenNW - screenSE;
+    qDebug() << "screenDiagonal" << screenDiagonal;
     auto mapDiagonal = mapNW - mapSE;
+    qDebug() << "mapDiagonal" << mapDiagonal;
     auto diagonalFactor = directDiv(screenDiagonal,  mapDiagonal);
-    minimalScale = max(diagonalFactor.x(), diagonalFactor.y());
+    qDebug() << "diagonal factor" << diagonalFactor;
+    minimalScale = max(diagonalFactor.x(), -diagonalFactor.y());
     qDebug() << "minimal scale" << minimalScale;
 }
 
@@ -54,14 +61,12 @@ void WorldView::moveScreen(QPointF screenShift)
     //qDebug() << "screenShift" << screenShift;
     QPointF mapShift = screenShift / scale;
     //qDebug() << "mapShift" << mapShift;
-    qreal boxLeft = mapNW.x() - (currentCenter.x() + screenNW.x() / scale);
-    qreal boxRight = mapSE.x() - (currentCenter.x() + screenSE.x() / scale);
-    qreal boxTop = mapNW.y() - (currentCenter.y() + screenNW.y() / scale);
-    qreal boxBottom = mapSE.y() - (currentCenter.y() + screenSE.y() / scale);
+    QPointF boxNW = mapNW - getNW();
+    QPointF boxSE = mapSE - getSE();
     //qDebug() << "move box" << boxLeft << boxRight << boxTop << boxBottom;
     int sector = 0;
-    sector += mapShift.x() < boxLeft ? -1 : (mapShift.x() > boxRight ? 1 : 0);
-    sector += mapShift.y() < boxBottom ? -3 : (mapShift.y() > boxTop ? 3 : 0);
+    sector += mapShift.x() < boxNW.x() ? -1 : (mapShift.x() > boxSE.x() ? 1 : 0);
+    sector += mapShift.y() < boxSE.y() ? -3 : (mapShift.y() > boxNW.y() ? 3 : 0);
     QPointF boxedShift(0.0, 0.0);
 
 
@@ -97,7 +102,7 @@ void WorldView::moveScreen(QPointF screenShift)
         break;
     }
 
-    currentCenter += boxedShift;
+    mapViewCenter += boxedShift;
 }
 
 void WorldView::decreaseScale()
@@ -106,13 +111,15 @@ void WorldView::decreaseScale()
 
     if(futureScale > minimalScale)
     {
-        auto nwFactor = directDiv(screenNW, mapNW - currentCenter);
-        auto seFactor = directDiv(screenSE, mapSE - currentCenter);
-        auto minimalSimpleScale =
-            max(max(nwFactor.x(), nwFactor.y()),
-                max(seFactor.x(), seFactor.y()));
-
         qDebug() << "\nin decreaseScale";
+        auto nwFactor = directDiv(screenNW - screenViewCenter, mapNW - mapViewCenter);
+        auto seFactor = directDiv(screenSE - screenViewCenter, mapSE - mapViewCenter);
+        qDebug() << "nwFactor" << nwFactor;
+        qDebug() << "seFactor" << seFactor;
+        auto minimalSimpleScale =
+            max(max(nwFactor.x(), -nwFactor.y()),
+                max(seFactor.x(), -seFactor.y()));
+
         qDebug() << "scale:\t" << scale;
         qDebug() << "fu scale:\t" << futureScale;
         qDebug() << "minSmplScl:\t" << minimalSimpleScale;
@@ -125,7 +132,7 @@ void WorldView::decreaseScale()
                                  + oneWay<neg>(getSE().y() - mapSE.y()));
 
             qDebug() << "shift:\t" << shift;
-            currentCenter -= shift;
+            mapViewCenter -= shift;
         }
 
         scale = futureScale;
@@ -146,14 +153,14 @@ void WorldView::increaseScale()
 
 QPointF WorldView::transformToScreenCordinates(const QPointF &point) const
 {
-    return QPointF((currentCenter.x() - point.x()) * scale,
-                   (currentCenter.y() - point.y()) * scale);
+    return QPointF(screenViewCenter.x() + (point.x() - mapViewCenter.x()) * scale,
+                   screenViewCenter.y() + (mapViewCenter.y() - point.y()) * scale);
 }
 
 QPointF WorldView::transformToMapCordinates(const QPointF &point) const
 {
-    return QPointF(currentCenter.x() + point.x() / scale,
-                   currentCenter.y() + point.y() / scale);
+    return QPointF(mapViewCenter.x() + (point.x() - screenViewCenter.x()) / scale,
+                   mapViewCenter.y() + (screenViewCenter.y() - point.y()) / scale);
 }
 
 QRectF WorldView::transformToScreenCordinates(QRectF rect, qreal adjust) const

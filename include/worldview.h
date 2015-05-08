@@ -49,7 +49,7 @@ public:
 private:
     QPointF mapNW, mapSE;
     QPointF screenNW, screenSE;
-    QPointF currentCenter; //in map coordinates
+    QPointF mapViewCenter, screenViewCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
 };

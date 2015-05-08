@@ -12,8 +12,8 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
     worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
                               grid->topMapBorder(), grid->bottomMapBorder(),
-                              -this->size().width() / 2, this->size().width() / 2,
-                              this->size().height() / 2, -this->size().height() / 2,
+                              0, this->size().width(),
+                              0, this->size().height(),
                               1.0);
     imageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
 
@@ -26,6 +26,14 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.25);
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
+
+    qDebug() << "north west corner";
+    qDebug() << "in map";
+    qDebug() << grid->cellCenter(0, 0);
+    qDebug() << grid->cellCenter(1, 0);
+    qDebug() << "in screen";
+    qDebug() << worldView->transformToScreenCordinates(grid->cellCenter(0, 0));
+    qDebug() << worldView->transformToScreenCordinates(grid->cellCenter(1, 0));
 
     // NOTE maybe all controll and interaction place in other class
     //setAttribute(Qt::WA_AcceptTouchEvents);
@@ -49,7 +57,6 @@ void MapWidget::paintEvent(QPaintEvent *event)
 {
     QPainter buferPainter(imageBufer);
     buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-    buferPainter.translate(width() / 2.0, height() / 2.0);
 
     qDebug() << "coordinate";
     qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
@@ -108,12 +115,12 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     switch(event->key())
     {
     case Qt::Key_A:
-        worldView->moveScreen(QPointF(+10.0, 0));
+        worldView->moveScreen(QPointF(-10.0, 0));
         repaint();
         break;
 
     case Qt::Key_D:
-        worldView->moveScreen(QPointF(-10.0, 0));
+        worldView->moveScreen(QPointF(+10.0, 0));
         repaint();
         break;
 
