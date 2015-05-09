@@ -16,11 +16,9 @@ LevelOfDetalisation::~LevelOfDetalisation()noexcept
 {
     assert(renderers.size() == limits.size());
 
-    for(auto & it : renderers)
-    {
+    for(auto it : renderers)
         delete it;
-        it = nullptr;
-    }
+
 }
 
 void LevelOfDetalisation::addRenderer(const QString &fileName, qreal downLimit)
