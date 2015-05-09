@@ -2,20 +2,28 @@
 
 #include <QDebug>
 
+#define CONTROL
+#include <algorithm>
+
 MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     QWidget(parent),
     model(model),
     grid(nullptr),
     worldView(nullptr),
-    imageBufer(nullptr)
+    imageBufer(nullptr),
+    fringe(20)
 {
+    fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
+    fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
+
     grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
     worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
                               grid->topMapBorder(), grid->bottomMapBorder(),
                               0, this->size().width(),
                               0, this->size().height(),
                               1.0);
-    imageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+
+    imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
 
     auto lodSea = new LevelOfDetalisation(worldView->getScale());
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
@@ -53,10 +61,11 @@ void MapWidget::paintEvent(QPaintEvent *event)
 {
     qDebug() << worldView->getScale();
     QPainter buferPainter(imageBufer);
-    buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
+    //buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::black);
+    buferPainter.translate(fringe, fringe);
 
-    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
-    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
+    auto nwIndex = grid->indices(worldView->transformToMapCordinates(fringedArea.topLeft()), QPointF(-1.0, -1.0)) - QPoint(1, 1);
+    auto seIndex = grid->indices(worldView->transformToMapCordinates(fringedArea.bottomRight()), QPointF(+1.0, +1.0)) + QPoint(1, 1);
     auto diff = seIndex - nwIndex;
     qDebug() << diff << diff.x() * diff.y();
 
@@ -70,8 +79,24 @@ void MapWidget::paintEvent(QPaintEvent *event)
                      worldView->transformToScreenCordinates(grid->tilingBox(column, row)));
         }
 
+
+
     QPainter mainPainter(this);
+#ifdef CONTROL
+    auto ims = imageBufer->size() + QSize(10, 10);
+    qreal tmpScale = std::min((qreal)width() / ims.width(), (qreal)height() / ims.height());
+    mainPainter.setTransform(QTransform(tmpScale, 0.0, 0.0, tmpScale, 5, 5));
     mainPainter.drawImage(0, 0, *imageBufer);
+    mainPainter.translate(fringe, fringe);
+    mainPainter.setPen(Qt::red);
+    mainPainter.drawLine(0, 0, width(), 0);
+    mainPainter.drawLine(width(), 0, width(), height());
+    mainPainter.drawLine(width(), height(), 0, height());
+    mainPainter.drawLine(0, height(), 0, 0);
+#else
+    mainPainter.drawImage(-fringe, -fringe, *imageBufer);
+#endif
+
 
 //    if (scale < 0.35) // full map rastr
 //    {
@@ -100,7 +125,9 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
 void MapWidget::resizeEvent(QResizeEvent *event)
 {
-    auto newImageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+    fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
+    fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
+    auto newImageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
     delete imageBufer;
     imageBufer = newImageBufer;
     newImageBufer = nullptr;

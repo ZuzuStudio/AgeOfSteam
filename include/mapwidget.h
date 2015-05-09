@@ -32,6 +32,8 @@ private:
     WorldView *worldView;
     std::vector<LevelOfDetalisation *> terrainTypes; // NOTE maybe place in other class
     QImage *imageBufer;
+    int fringe;
+    QRectF fringedArea;
 };
 
 #endif // MAPWIDGET_H
