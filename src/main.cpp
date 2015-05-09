@@ -10,7 +10,6 @@ TODO: license here
 
 #include "../include/mapwidget.h"
 #include "../include/mainwindow.h"
-#include "../include/arraygrid.h"
 #include "../include/mapgenerator.h"
 #include "../include/logicalmap.h"
 #include <QDebug>
