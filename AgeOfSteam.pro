@@ -26,7 +26,7 @@ SOURCES += \
     src/hexagonalgrid.cpp \
     src/mapgenerator.cpp \
     src/worldview.cpp \
-    src/logiaclmap.cpp
+    src/logicalmap.cpp
 
 HEADERS += \
     include/mainwindow.h \
