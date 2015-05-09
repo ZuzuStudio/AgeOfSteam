@@ -1,9 +1,8 @@
 #include "../include/mapwidget.h"
-#include "../include/mapgenerator.h"
 
 #include <QDebug>
 
-MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
+MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     QWidget(parent),
     model(model),
     grid(nullptr),
@@ -13,8 +12,8 @@ MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
     grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
     worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
                               grid->topMapBorder(), grid->bottomMapBorder(),
-                              -this->size().width() / 2, this->size().width() / 2,
-                              this->size().height() / 2, -this->size().height() / 2,
+                              0, this->size().width(),
+                              0, this->size().height(),
                               1.0);
     imageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
 
@@ -22,24 +21,18 @@ MapWidget::MapWidget(ArrayGrid &model, QWidget *parent) :
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
     terrainTypes.push_back(lodSea);
 
+    auto lodLand = new LevelOfDetalisation(worldView->getScale());
+    lodLand->addRenderer(QString(":/res/landFlatLod1_res.svg"), 0.0);
+    terrainTypes.push_back(lodLand);
+
     auto lodHill = new LevelOfDetalisation(worldView->getScale());
     lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
-    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.25);
+    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.1);
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
-//    renderer = new QSvgRenderer(QString(":/res/hillFlatLod1_res.svg"),
-//                                this);//QString("../../hillFlat_res.svg")//QString("../src/files/bubbles.svg")
-    //---------------//
-    //connect(renderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
-    setAttribute(Qt::WA_AcceptTouchEvents);
-
-//    leftTop = window()->rect().topLeft();
-//    rightTop = window()->rect().topRight();
-//    rightBottom = window()->rect().bottomRight();
-//    leftBottom = window()->rect().bottomLeft();
-//    calculateCenter();
-
+    // NOTE maybe all controll and interaction place in other class
+    //setAttribute(Qt::WA_AcceptTouchEvents);
 }
 
 MapWidget::~MapWidget()
@@ -58,28 +51,19 @@ MapWidget::~MapWidget()
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
+    qDebug() << worldView->getScale();
     QPainter buferPainter(imageBufer);
     buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-    buferPainter.translate(width() / 2.0, height() / 2.0);
 
-    qDebug() << "coordinate";
-    qDebug() << "nw: " << worldView->getNW() << ", se: " << worldView->getSE();
-    qDebug() << "scale: " << worldView->getScale();
-
-    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0))-QPoint(1,1);
-    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0))+QPoint(1,1);
-
-    qDebug() << "index";
-    qDebug() << "nw: " << nwIndex << ", se: " << seIndex;
+    auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
+    auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
+    auto diff = seIndex - nwIndex;
+    qDebug() << diff << diff.x() * diff.y();
 
     // TODO in this part switch beetwen cluster and svg
     for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
         for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
         {
-            //qDebug() << "cl: " << column << "rw: " << row;
-            //qDebug() << "cell " << model.cell(column, row);
-            //qDebug() << "LOD: " << terrainTypes[model.cell(column, row)];
-            //qDebug() << "renderer" << terrainTypes[model.cell(column, row)]->renderer();
             terrainTypes[model.cell(column, row)]
             ->renderer()
             ->render(&buferPainter,
@@ -114,27 +98,39 @@ void MapWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
+void MapWidget::resizeEvent(QResizeEvent *event)
+{
+    auto newImageBufer  = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
+    delete imageBufer;
+    imageBufer = newImageBufer;
+    newImageBufer = nullptr;
+
+    worldView->setScreenParameter(0.0, width(), 0.0, height());
+
+    Q_UNUSED(event);
+}
+
 void MapWidget::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
     {
     case Qt::Key_A:
-        worldView->moveScreen(QPointF(+10.0, 0));
-        repaint();
-        break;
-
-    case Qt::Key_D:
         worldView->moveScreen(QPointF(-10.0, 0));
         repaint();
         break;
 
+    case Qt::Key_D:
+        worldView->moveScreen(QPointF(+10.0, 0));
+        repaint();
+        break;
+
     case Qt::Key_W:
-        worldView->moveScreen(QPointF(0, +10.0));
+        worldView->moveScreen(QPointF(0, -10.0));
         repaint();
         break;
 
     case Qt::Key_S:
-        worldView->moveScreen(QPointF(0, -10.0));
+        worldView->moveScreen(QPointF(0, +10.0));
         repaint();
         break;
 

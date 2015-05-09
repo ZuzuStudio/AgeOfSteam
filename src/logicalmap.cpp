@@ -1,7 +1,7 @@
-#include "include/arraygrid.h"
+#include "include/logicalmap.h"
 #include <assert.h>
 
-ArrayGrid::ArrayGrid(TerrainType **array, int rows, int columns):
+LogicalMap::LogicalMap(TerrainType **array, int rows, int columns):
     array(nullptr), mColumns(columns), mRows(rows)
 {
     assert(columns > 0);
@@ -13,7 +13,7 @@ ArrayGrid::ArrayGrid(TerrainType **array, int rows, int columns):
             this->array[column][row] = array[column][row];
 }
 
-ArrayGrid::ArrayGrid(int columns, int rows):
+LogicalMap::LogicalMap(int columns, int rows):
     array(nullptr), mColumns(columns), mRows(rows)
 {
     assert(columns > 0);
@@ -22,10 +22,25 @@ ArrayGrid::ArrayGrid(int columns, int rows):
 
     for(int column = 0; column < mColumns; ++column)
         for(int row = 0; row < mRows; ++row)
-            this->array[column][row] = HILL;
+            array[column][row] = HILL;
+
+    array[0][0] = SEA;
+    array[1][0] = SEA;
+    array[1][1] = SEA;
+    array[1][2] = SEA;
+    array[mColumns / 2 - 1][mRows / 2 - 2] = LAND;
+    array[mColumns / 2 + 1][mRows / 2 - 2] = LAND;
+    array[mColumns / 2 - 3][mRows / 2 + 1] = LAND;
+    array[mColumns / 2 - 2][mRows / 2 + 2] = LAND;
+    array[mColumns / 2 - 2][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 - 1][mRows / 2 + 3] = LAND;
+    array[mColumns / 2][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 + 1][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 + 2][mRows / 2 + 2] = LAND;
+    array[mColumns / 2 + 2][mRows / 2 + 1] = LAND;
 }
 
-TerrainType ArrayGrid::cell(int column, int row)
+TerrainType LogicalMap::cell(int column, int row)
 {
     if(column < 0 || row < 0 || column >= mColumns || row >= mRows)
         return SEA;
@@ -33,13 +48,13 @@ TerrainType ArrayGrid::cell(int column, int row)
     return array[column][row];
 }
 
-void ArrayGrid::setCell(TerrainType value, int row, int column)
+void LogicalMap::setCell(TerrainType value, int row, int column)
 {
     if(column >= 0 && row >= 0 && column < mColumns && row < mRows)
         array[column][row] = value;
 }
 
-ArrayGrid::~ArrayGrid()
+LogicalMap::~LogicalMap()
 {
     for(int column = 0; column < mColumns; ++column)
     {
@@ -51,7 +66,7 @@ ArrayGrid::~ArrayGrid()
     array = nullptr;
 }
 
-void ArrayGrid::allocateMemory()
+void LogicalMap::allocateMemory()
 {
     array = new TerrainType*[mColumns]();
 

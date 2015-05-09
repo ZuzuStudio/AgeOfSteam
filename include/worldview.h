@@ -17,6 +17,8 @@ public:
     WorldView &operator =(WorldView &&) = default;
     ~WorldView() = default;
 
+    void setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom);
+
     void moveScreen(QPointF screenShift);
 
     void moveScreen(qreal x, qreal y)
@@ -49,9 +51,11 @@ public:
 private:
     QPointF mapNW, mapSE;
     QPointF screenNW, screenSE;
-    QPointF currentCenter; //in map coordinates
+    QPointF mapViewCenter, screenViewCenter; //in map coordinates
     qreal scale;
     qreal minimalScale, maximalScale;
+
+    void restoreCorrectness();
 };
 
 #endif // WORLDVIEW_H

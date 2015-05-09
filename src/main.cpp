@@ -12,12 +12,13 @@ TODO: license here
 #include "../include/mainwindow.h"
 #include "../include/arraygrid.h"
 #include "../include/mapgenerator.h"
+#include "../include/logicalmap.h"
 #include <QDebug>
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    ArrayGrid * model = MapGenerator::generate(21, 21);
+    LogicalMap * model = MapGenerator::generate(201, 201);
     MapWidget window(*model);
     window.show();
 

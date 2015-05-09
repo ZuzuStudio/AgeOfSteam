@@ -7,7 +7,7 @@
 #include <QFile>
 #include <QTextStream>
 //#include "hexagonalgrid.h"
-#include "include/arraygrid.h"
+#include "include/logicalmap.h"
 
 class MapGenerator
 {
@@ -16,7 +16,7 @@ private:
     ~MapGenerator();
 
 public:
-    static ArrayGrid *generate(int width, int height);
+    static LogicalMap *generate(int width, int height);
 
 private:
     static void makeFile(TerrainType ** map, int width, int height, QString filename= "map_test.txt");

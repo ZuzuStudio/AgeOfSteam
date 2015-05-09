@@ -8,7 +8,7 @@ class LevelOfDetalisation
 {
 public:
     LevelOfDetalisation(const qreal &referenceToCurrentScale);
-    LevelOfDetalisation(const LevelOfDetalisation &)=delete;
+    LevelOfDetalisation(const LevelOfDetalisation &) = delete;
 
     ~LevelOfDetalisation() noexcept;
 
