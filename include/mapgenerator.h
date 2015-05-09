@@ -9,8 +9,6 @@
 //#include "hexagonalgrid.h"
 #include "include/arraygrid.h"
 
-enum Territori :unsigned {Land, Sea};
-
 class MapGenerator
 {
 private:
@@ -21,7 +19,7 @@ public:
     static ArrayGrid *generate(int width, int height);
 
 private:
-    static void makeFile(Territori ** map, int width, int height, QString filename= "map_test.txt");
+    static void makeFile(TerrainType ** map, int width, int height, QString filename= "map_test.txt");
 };
 
 #endif // MAPGENERATOR_H

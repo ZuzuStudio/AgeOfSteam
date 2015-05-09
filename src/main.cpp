@@ -11,14 +11,14 @@ TODO: license here
 #include "../include/mapwidget.h"
 #include "../include/mainwindow.h"
 #include "../include/arraygrid.h"
+#include "../include/mapgenerator.h"
 #include <QDebug>
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    ArrayGrid model(9, 9);
-    MapWidget window(model);
-    //window.setScale(0.333);
+    ArrayGrid * model = MapGenerator::generate(21, 21);
+    MapWidget window(*model);
     window.show();
 
     return app.exec();
