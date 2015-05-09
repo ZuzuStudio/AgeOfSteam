@@ -26,9 +26,9 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     terrainTypes.push_back(lodLand);
 
     auto lodHill = new LevelOfDetalisation(worldView->getScale());
-    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.0);
-    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.25);
-    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.5);
+    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
+    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.1);
+    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
     // NOTE maybe all controll and interaction place in other class
@@ -57,6 +57,8 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
     auto nwIndex = grid->indices(worldView->getNW(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
     auto seIndex = grid->indices(worldView->getSE(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
+    auto diff = seIndex - nwIndex;
+    qDebug() << diff << diff.x() * diff.y();
 
     // TODO in this part switch beetwen cluster and svg
     for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)

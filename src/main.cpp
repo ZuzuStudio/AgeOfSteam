@@ -16,7 +16,7 @@ TODO: license here
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    LogicalMap model(21, 21);
+    LogicalMap model(201, 201);
     MapWidget window(model);
     window.show();
 
