@@ -12,8 +12,8 @@
 class MapGenerator
 {
 private:
-    MapGenerator();
-    ~MapGenerator();
+    MapGenerator(){}
+    ~MapGenerator(){}
 
 public:
     static LogicalMap *generate(int width, int height);

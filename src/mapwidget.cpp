@@ -155,29 +155,29 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 */
 //bool MapWidget::event(QEvent *event)
 //{
+//    QPoint clickPos;
+
 //    switch (event->type())
 //    {
 //    case QEvent::MouseButtonPress:
-//    {
 //        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
-//        //d_origin = current_event->pos();
 //        clickPos = current_event->pos();
-//    }
+//        break;
+
 //    case QEvent::MouseMove:
-//    {
 //        QMouseEvent * current_event = static_cast<QMouseEvent *>(event);
 
 //        //origin.setX(origin.rx() + (current_event->pos().rx() - d_origin.rx()));
 //        //origin.setY(origin.ry() + (current_event->pos().ry() - d_origin.ry()));
 //        //d_origin = current_event->pos();
 //        QPoint current = current_event->pos();
-//        HG->addShift(current - clickPos);
+//        worldView->moveScreen(current.x() - clickPos.x(), current.y() - clickPos.y());
 //        clickPos = current;
-//        update();
+//        repaint();
 //        return true;
-//    }
 
-//    case QEvent::TouchBegin:
+
+//    /*case QEvent::TouchBegin:
 //    {
 //        QTouchEvent * touchEvent = static_cast<QTouchEvent *>(event);
 //        QList<QTouchEvent::TouchPoint> touchPoints = touchEvent->touchPoints();
@@ -217,9 +217,8 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 //        }
 
 //        return true;
-//    }
+//    }*/
 
-//    case QEvent::TouchEnd:
 //    default:
 //        break;
 //    }

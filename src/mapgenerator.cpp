@@ -1,18 +1,8 @@
 #include "include/mapgenerator.h"
 
-MapGenerator::MapGenerator()
-{
-
-}
-
-MapGenerator::~MapGenerator()
-{
-
-}
 
 LogicalMap *MapGenerator::generate(int width, int height)
 {
-    //init map
     TerrainType **map = new TerrainType*[height];
 
     for(int i = 0; i < height; ++i)
@@ -24,7 +14,6 @@ LogicalMap *MapGenerator::generate(int width, int height)
         }
     }
 
-    //generate default land
     srand(time(NULL));
     int x = 0, y = 0;
 
@@ -35,9 +24,9 @@ LogicalMap *MapGenerator::generate(int width, int height)
 
         for(int i = 0; i < height / 10; ++i)
         {
-            for(int n = 0; n < width / 10; ++n)
+            for(int j = 0; j < width / 10; ++j)
             {
-                map[i + x][n + y] = TerrainType::HILL;
+                map[i + x][j + y] = TerrainType::HILL;
             }
         }
     }
@@ -64,7 +53,6 @@ LogicalMap *MapGenerator::generate(int width, int height)
                 cy = cy % width;
 
                 map[x][y] = map[cx][cy];
-                //changeType(getElement(cx,cy).type, x, y);
             }
         }
     } while (step > 1);
