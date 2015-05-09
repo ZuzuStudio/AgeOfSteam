@@ -21,10 +21,14 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
     terrainTypes.push_back(lodSea);
 
+    auto lodLand = new LevelOfDetalisation(worldView->getScale());
+    lodLand->addRenderer(QString(":/res/landFlatLod1_res.svg"), 0.0);
+    terrainTypes.push_back(lodLand);
+
     auto lodHill = new LevelOfDetalisation(worldView->getScale());
-    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
-    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.25);
-    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
+    lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.0);
+    lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.25);
+    lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.5);
     terrainTypes.push_back(lodHill);
 
     // NOTE maybe all controll and interaction place in other class
@@ -47,6 +51,7 @@ MapWidget::~MapWidget()
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
+    qDebug() << worldView->getScale();
     QPainter buferPainter(imageBufer);
     buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
 

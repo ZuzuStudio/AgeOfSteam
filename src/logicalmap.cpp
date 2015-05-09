@@ -28,6 +28,16 @@ LogicalMap::LogicalMap(int columns, int rows):
     array[1][0] = SEA;
     array[1][1] = SEA;
     array[1][2] = SEA;
+    array[mColumns / 2 - 1][mRows / 2 - 2] = LAND;
+    array[mColumns / 2 + 1][mRows / 2 - 2] = LAND;
+    array[mColumns / 2 - 3][mRows / 2 + 1] = LAND;
+    array[mColumns / 2 - 2][mRows / 2 + 2] = LAND;
+    array[mColumns / 2 - 2][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 - 1][mRows / 2 + 3] = LAND;
+    array[mColumns / 2][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 + 1][mRows / 2 + 3] = LAND;
+    array[mColumns / 2 + 2][mRows / 2 + 2] = LAND;
+    array[mColumns / 2 + 2][mRows / 2 + 1] = LAND;
 }
 
 TerrainType LogicalMap::cell(int column, int row)

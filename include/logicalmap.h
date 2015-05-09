@@ -1,7 +1,7 @@
 #ifndef LOGICALMAP_H
 #define LOGICALMAP_H
 
-enum TerrainType {SEA, HILL};
+enum TerrainType {SEA, LAND, HILL};
 
 class LogicalMap
 {
