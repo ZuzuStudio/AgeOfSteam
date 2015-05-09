@@ -2,8 +2,11 @@
 
 #include <QDebug>
 
-#define CONTROL
+//#define CONTROL
 #include <algorithm>
+
+// need draw transformed old bufer
+// need draw strip
 
 MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     QWidget(parent),
@@ -11,7 +14,8 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     grid(nullptr),
     worldView(nullptr),
     imageBufer(nullptr),
-    fringe(20)
+    fringe(20),
+    firstTime(0)
 {
     fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
     fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
@@ -61,25 +65,57 @@ void MapWidget::paintEvent(QPaintEvent *event)
 {
     qDebug() << worldView->getScale();
     QPainter buferPainter(imageBufer);
+    buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
     //buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::black);
     buferPainter.translate(fringe, fringe);
 
-    auto nwIndex = grid->indices(worldView->transformToMapCordinates(fringedArea.topLeft()), QPointF(-1.0, -1.0)) - QPoint(1, 1);
-    auto seIndex = grid->indices(worldView->transformToMapCordinates(fringedArea.bottomRight()), QPointF(+1.0, +1.0)) + QPoint(1, 1);
-    auto diff = seIndex - nwIndex;
-    qDebug() << diff << diff.x() * diff.y();
+    if(firstTime == 0)
+    {
+        drawMapSubarea(&buferPainter, fringedArea.topLeft(), fringedArea.bottomRight());
+    }
+    else
+    {
+        auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
+        auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
 
-    // TODO in this part switch beetwen cluster and svg
-    for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
-        for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
-        {
-            terrainTypes[model.cell(column, row)]
-            ->renderer()
-            ->render(&buferPainter,
-                     worldView->transformToScreenCordinates(grid->tilingBox(column, row)));
-        }
+        drawOldBufer(&buferPainter, *imageBufer, screenSavedNW, screenSavedSE);
+        qDebug() << "overhead";
+        auto ovNW = QPointF(fringedArea.left(), screenSavedNW.y());
+        auto ovSE = fringedArea.topRight();
+        qDebug() << ovNW << ovSE;
+        qDebug() << worldView->transformToMapCordinates(ovNW) << worldView->transformToMapCordinates(ovSE);
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        ovNW = fringedArea.bottomLeft();
+        ovSE = QPointF(fringedArea.right(), screenSavedSE.y());
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        ovNW = QPointF(screenSavedNW.x(), fringedArea.top());
+        ovSE = fringedArea.bottomLeft();
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        ovNW = fringedArea.topRight();
+        ovSE = QPointF(screenSavedSE.x(), fringedArea.bottom());
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        ovNW = QPointF(fringedArea.center().x()-20,fringedArea.top());
+        ovSE = QPointF(fringedArea.center().x()+20,fringedArea.bottom());
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        ovNW = QPointF(fringedArea.left(),fringedArea.center().y()-20);
+        ovSE = QPointF(fringedArea.right(),fringedArea.center().y()+20);
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
+    }
 
+    firstTime = (firstTime + 1) % 10;
 
+    savedNW = worldView->transformToMapCordinates(fringedArea.topLeft());
+    savedSE = worldView->transformToMapCordinates(fringedArea.bottomRight());
+
+    qDebug() << "in paintEvent";
+    qDebug() << *worldView;
+    qDebug() << savedNW << savedSE;
+    {
+        auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
+        auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
+        auto screenSavedDiag = screenSavedNW - screenSavedSE;
+        qDebug() << screenSavedNW << screenSavedSE << screenSavedDiag;
+    }
 
     QPainter mainPainter(this);
 #ifdef CONTROL
@@ -133,6 +169,7 @@ void MapWidget::resizeEvent(QResizeEvent *event)
     newImageBufer = nullptr;
 
     worldView->setScreenParameter(0.0, width(), 0.0, height());
+    firstTime = 0;
 
     Q_UNUSED(event);
 }
@@ -175,6 +212,45 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
         QWidget::keyPressEvent(event);
         break;
     }
+}
+
+void MapWidget::drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE)
+{
+    auto nwIndex = grid->indices(worldView->transformToMapCordinates(screenNW), QPointF(-1.0, -1.0)) - QPoint(1, 1);
+    auto seIndex = grid->indices(worldView->transformToMapCordinates(screenSE), QPointF(+1.0, +1.0)) + QPoint(1, 1);
+    auto diff = seIndex - nwIndex;
+    qDebug() << diff << diff.x() * diff.y();
+
+    // TODO in this part switch beetwen cluster and svg
+    for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
+        for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
+        {
+            terrainTypes[model.cell(column, row)]
+            ->renderer()
+            ->render(painter,
+                     worldView->transformToScreenCordinates(grid->tilingBox(column, row)));
+        }
+}
+
+void MapWidget::drawOldBufer(QPainter *painter, QImage image,
+                             QPointF screenSavedNW, QPointF screenSavedSE)
+{
+    qDebug() << "in drawOldBufer";
+    qDebug() << *worldView;
+    qDebug() << savedNW << savedSE;
+    painter->save();
+    auto screenSavedDiag = screenSavedNW - screenSavedSE;
+    qDebug() << screenSavedNW << screenSavedSE << screenSavedDiag;
+    auto newNW = fringedArea.topLeft(), newSE = fringedArea.bottomRight();
+    auto newDiag = newNW - newSE;
+    auto sx = screenSavedDiag.x() / newDiag.x();
+    auto sy = screenSavedDiag.y() / newDiag.y();
+    auto dx = (screenSavedSE.x() * newNW.x() - screenSavedNW.x() * newSE.x()) / newDiag.x();
+    auto dy = (screenSavedSE.y() * newNW.y() - screenSavedNW.y() * newSE.y()) / newDiag.y();
+    qDebug() << sx << sy << dx << dy;
+    painter->setTransform(QTransform(sx, 0.0, 0.0, sy, dx, dy));
+    painter->drawImage(0, 0, image);
+    painter->restore();
 }
 
 /**

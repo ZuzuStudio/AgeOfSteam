@@ -34,6 +34,11 @@ private:
     QImage *imageBufer;
     int fringe;
     QRectF fringedArea;
+    int firstTime;
+    QPointF savedNW, savedSE;
+
+    void drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE);
+    void drawOldBufer(QPainter *painter, QImage image/*N.B! by value*/, QPointF screenSavedNW, QPointF screenSavedSE);
 };
 
 #endif // MAPWIDGET_H

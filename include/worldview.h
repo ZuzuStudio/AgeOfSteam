@@ -51,11 +51,18 @@ public:
 private:
     QPointF mapNW, mapSE;
     QPointF screenNW, screenSE;
-    QPointF mapViewCenter, screenViewCenter; //in map coordinates
+    QPointF mapViewCenter, screenViewCenter;
     qreal scale;
     qreal minimalScale, maximalScale;
 
     void restoreCorrectness();
+
+    friend QDebug operator<<(QDebug dbg, const WorldView &wv)
+    {
+        dbg.nospace() << "WV(" << wv.mapViewCenter << "; " << wv.scale << ")";
+
+        return dbg.space();
+    }
 };
 
 #endif // WORLDVIEW_H
