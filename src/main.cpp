@@ -16,7 +16,7 @@ TODO: license here
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    ArrayGrid model(21,21);
+    ArrayGrid model(9, 9);
     MapWidget window(model);
     //window.setScale(0.333);
     window.show();
