@@ -9,6 +9,8 @@
 //#include "hexagonalgrid.h"
 #include "include/logicalmap.h"
 
+#include<QDebug>
+
 class MapGenerator
 {
 private:
@@ -19,7 +21,7 @@ public:
     static LogicalMap *generate(int width, int height);
 
 private:
-    static void makeFile(TerrainType ** map, int width, int height, QString filename= "map_test.txt");
+    static void makeFile(int ** map, int width, int height, QString filename= "map_test.txt");
 };
 
 #endif // MAPGENERATOR_H

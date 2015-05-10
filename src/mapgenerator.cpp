@@ -1,8 +1,61 @@
 #include "include/mapgenerator.h"
 
+namespace generate_tile
+{
+    void average_balancying(int ** map, int width, int height)
+    {
+        int sum = 0;
+        int neighbors = 0;
+
+        for(int i = 0; i < height; ++i)
+        {
+            for(int j = 0; j < width; ++j)
+            {
+
+                for(int x = std::max(0, i - 1); x <= std::min(i + 1, height - 1); ++x)
+                {
+                    for(int y = std::max(0, j - 1); y <= std::min(j + 1, width - 1); ++y)
+                    {
+                        if(x != i || y != j)
+                        {
+                            sum += map[x][y];
+                            ++neighbors;
+                        }
+                    }
+                }
+                map[i][j] = sum / neighbors;
+
+            }
+        }
+    }
+
+    int **height_map(int width, int height)
+    {
+        int **map = new int*[height];
+        for(int i = 0; i < width; ++i)
+        {
+            map[i] = new int[width];
+        }
+
+        for(int i = 0; i < height; ++i)
+        {
+            for(int j = 0; j < width; ++j)
+            {
+                map[i][j] = -255 + (rand() % (256));
+            }
+        }
+
+        average_balancying(map, width, height);
+
+        return map;
+    }
+}
+
 
 LogicalMap *MapGenerator::generate(int width, int height)
 {
+    int ** heightmap = generate_tile::height_map(width, height);
+
     TerrainType **map = new TerrainType*[height];
 
     for(int i = 0; i < height; ++i)
@@ -26,12 +79,12 @@ LogicalMap *MapGenerator::generate(int width, int height)
         {
             for(int j = 0; j < width / 10; ++j)
             {
-                map[i + x][j + y] = TerrainType::HILL;
+                map[i + x][j + y] = heightmap[i + x][j + y] > 100 ? TerrainType::HILL
+                                                                  : TerrainType::LAND;
             }
         }
     }
 
-    //fractal
     int step = (width + height) / 2;
 
     do
@@ -57,11 +110,12 @@ LogicalMap *MapGenerator::generate(int width, int height)
         }
     } while (step > 1);
 
+    delete heightmap;
 
     return new LogicalMap(map, width, height);
 }
 
-void MapGenerator::makeFile(TerrainType **map, int width, int height, QString filename)
+void MapGenerator::makeFile(int **map, int width, int height, QString filename)
 {
     QFile file(filename);
 
