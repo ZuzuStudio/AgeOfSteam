@@ -31,7 +31,7 @@ private:
     HexagonalGrid *grid;
     WorldView *worldView;
     std::vector<LevelOfDetalisation *> terrainTypes; // NOTE maybe place in other class
-    QImage *imageBufer;
+    QImage *imageBufer, *savedImage;
     int fringe;
     QRectF fringedArea;
     int firstTime;

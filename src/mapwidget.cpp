@@ -14,7 +14,7 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     grid(nullptr),
     worldView(nullptr),
     imageBufer(nullptr),
-    fringe(20),
+    fringe(200),
     firstTime(0)
 {
     fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
@@ -28,6 +28,7 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
                               1.0);
 
     imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
+    savedImage  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
 
     auto lodSea = new LevelOfDetalisation(worldView->getScale());
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
@@ -71,15 +72,20 @@ void MapWidget::paintEvent(QPaintEvent *event)
 
     if(firstTime == 0)
     {
-        drawMapSubarea(&buferPainter, fringedArea.topLeft(), fringedArea.bottomRight());
+        QPainter savedPainter(savedImage);
+        savedPainter.translate(0, 0);
+        drawMapSubarea(&savedPainter, fringedArea.topLeft(), fringedArea.bottomRight());
+        buferPainter.drawImage(-fringe, -fringe, *savedImage);
+        savedNW = worldView->transformToMapCordinates(fringedArea.topLeft());
+        savedSE = worldView->transformToMapCordinates(fringedArea.bottomRight());
     }
     else
     {
         auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
         auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
 
-        drawOldBufer(&buferPainter, *imageBufer, screenSavedNW, screenSavedSE);
-        qDebug() << "overhead";
+        drawOldBufer(&buferPainter, *savedImage, screenSavedNW, screenSavedSE);
+        /*qDebug() << "overhead";
         auto ovNW = QPointF(fringedArea.left(), screenSavedNW.y());
         auto ovSE = fringedArea.topRight();
         qDebug() << ovNW << ovSE;
@@ -99,13 +105,12 @@ void MapWidget::paintEvent(QPaintEvent *event)
         drawMapSubarea(&buferPainter, ovNW, ovSE);
         ovNW = QPointF(fringedArea.left(),fringedArea.center().y()-20);
         ovSE = QPointF(fringedArea.right(),fringedArea.center().y()+20);
-        drawMapSubarea(&buferPainter, ovNW, ovSE);
+        drawMapSubarea(&buferPainter, ovNW, ovSE);*/
     }
 
     firstTime = (firstTime + 1) % 10;
 
-    savedNW = worldView->transformToMapCordinates(fringedArea.topLeft());
-    savedSE = worldView->transformToMapCordinates(fringedArea.bottomRight());
+
 
     qDebug() << "in paintEvent";
     qDebug() << *worldView;
