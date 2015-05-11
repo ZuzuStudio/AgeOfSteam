@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-//#define CONTROL
+#define CONTROL
 #include <algorithm>
 
 // need draw transformed old bufer
@@ -68,19 +68,19 @@ void MapWidget::paintEvent(QPaintEvent *event)
     QPainter buferPainter(imageBufer);
     buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
     //buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::black);
-    buferPainter.translate(fringe, fringe);
 
     if(firstTime == 0)
     {
         QPainter savedPainter(savedImage);
-        savedPainter.translate(0, 0);
+        savedPainter.translate(fringe, 0);
         drawMapSubarea(&savedPainter, fringedArea.topLeft(), fringedArea.bottomRight());
-        buferPainter.drawImage(-fringe, -fringe, *savedImage);
+        buferPainter.drawImage(0, 0, *savedImage);
         savedNW = worldView->transformToMapCordinates(fringedArea.topLeft());
         savedSE = worldView->transformToMapCordinates(fringedArea.bottomRight());
     }
     else
     {
+        buferPainter.translate(0, fringe);
         auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
         auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
 
@@ -135,7 +135,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
     mainPainter.drawLine(width(), height(), 0, height());
     mainPainter.drawLine(0, height(), 0, 0);
 #else
-    mainPainter.drawImage(-fringe, -fringe, *imageBufer);
+    mainPainter.drawImage(0, 0, *imageBufer);
 #endif
 
 
