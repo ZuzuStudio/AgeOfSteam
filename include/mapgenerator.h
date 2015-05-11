@@ -8,6 +8,7 @@
 #include <QTextStream>
 //#include "hexagonalgrid.h"
 #include "include/logicalmap.h"
+#include "include/algorithm/perlinnoise.h"
 
 #include<QDebug>
 

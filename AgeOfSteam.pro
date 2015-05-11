@@ -26,7 +26,8 @@ SOURCES += \
     src/hexagonalgrid.cpp \
     src/mapgenerator.cpp \
     src/worldview.cpp \
-    src/logicalmap.cpp
+    src/logicalmap.cpp \
+    src/algorithm/perlinnoise.cpp
 
 HEADERS += \
     include/mainwindow.h \
@@ -35,7 +36,9 @@ HEADERS += \
     include/hexagonalgrid.h \
     include/mapgenerator.h \
     include/worldview.h \
-    include/logicalmap.h
+    include/logicalmap.h \
+    src/algorithm/perlinnoise.h \
+    include/algorithm/perlinnoise.h
 
 RESOURCES += \
     res/res.qrc

@@ -2,7 +2,7 @@
 
 namespace generate_tile
 {
-    void average_balancying(int ** map, int width, int height)
+    /*void average_balancying(int ** map, int width, int height)
     {
         int sum = 0;
         int neighbors = 0;
@@ -23,19 +23,12 @@ namespace generate_tile
                         }
                     }
                 }
-                map[i][j] += sum / neighbors;
+                map[i][j] = (map[i][j] + sum) / (neighbors + 1);
 
             }
         }
 
-        for(int i = 0; i < height; ++i)
-        {
-            for(int j = 0; j < width; ++j)
-            {
-                qDebug() << map[i][j] << " ";
-            }
-        }
-    }
+    }*/
 
     int **height_map(int width, int height)
     {
@@ -50,13 +43,27 @@ namespace generate_tile
         {
             for(int j = 0; j < width; ++j)
             {
-                map[i][j] = -255 + (rand() % 511);
+                //map[i][j] = std::sin(i * 0.3) + std::cos(j * 0.3)
+                //            + std::sin(std::sqrt(i * i + j * j) * 0.7) * 2;
+                //map[i][j] = -255 + (rand() % 511);
+
+                PerlinNoise pn(1, 0.1, 0.33, 1, 2);
+                //qDebug() << pn.GetHeight(i, j);
+                map[i][j] = 1000 * pn.getHeight(i, j);
             }
         }
 
 
+        for(int i = 0; i < height; ++i)
+        {
+            for(int j = 0; j < width; ++j)
+            {
+                qDebug() << map[i][j] << " ";
+            }
+        }
 
-        average_balancying(map, width, height);
+
+        //average_balancying(map, width, height);
 
         return map;
     }
@@ -74,21 +81,21 @@ LogicalMap *MapGenerator::generate(int width, int height)
     for(int i = 0; i < height; ++i)
     {
         map[i] = new TerrainType[width];
-        /*for(int n = 0; n < width; ++n)
+        for(int n = 0; n < width; ++n)
         {
             map[i][n] = TerrainType::SEA;
-        }*/
+        }
     }
 
     for(int i = 0; i < height; ++i)
     {
         for(int j = 0; j < width; ++j)
         {
-            if(heightmap[i][j] > 190)
+            if(heightmap[i][j] > 100)
             {
                 map[i][j] = TerrainType::HILL;
             }
-            else if(heightmap[i][j] <= 190 && heightmap[i][j] > 120)
+            else if(heightmap[i][j] <= 100 && heightmap[i][j] > 0)
             {
                 map[i][j] = TerrainType::LAND;
             }
@@ -111,7 +118,7 @@ LogicalMap *MapGenerator::generate(int width, int height)
             for(int j = 0; j < width / 10; ++j)
             {
                 map[i + x][j + y] = heightmap[i + x][j + y] > 100 ? TerrainType::HILL
-                                                                  : TerrainType::LAND;
+                                                                  : TerrainType::HILL;
             }
         }
     }
