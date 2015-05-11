@@ -17,7 +17,7 @@ TODO: license here
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    LogicalMap * model = MapGenerator::generate(201, 201);
+    LogicalMap * model = MapGenerator::generate(33, 33);
     MapWidget window(*model);
     window.show();
 

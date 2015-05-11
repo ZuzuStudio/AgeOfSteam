@@ -27,10 +27,19 @@ namespace generate_tile
 
             }
         }
+
+        /*for(int i = 0; i < height; ++i)
+        {
+            for(int j = 0; j < width; ++j)
+            {
+                qDebug() << map[i][j] << " ";
+            }
+        }*/
     }
 
     int **height_map(int width, int height)
     {
+        srand(time(NULL));
         int **map = new int*[height];
         for(int i = 0; i < width; ++i)
         {
@@ -41,9 +50,11 @@ namespace generate_tile
         {
             for(int j = 0; j < width; ++j)
             {
-                map[i][j] = -255 + (rand() % (256));
+                map[i][j] = 0 + (rand() % 255);
             }
         }
+
+
 
         average_balancying(map, width, height);
 
@@ -54,21 +65,41 @@ namespace generate_tile
 
 LogicalMap *MapGenerator::generate(int width, int height)
 {
+
     int ** heightmap = generate_tile::height_map(width, height);
+
 
     TerrainType **map = new TerrainType*[height];
 
     for(int i = 0; i < height; ++i)
     {
         map[i] = new TerrainType[width];
-        for(int n = 0; n < width; ++n)
+        /*for(int n = 0; n < width; ++n)
         {
             map[i][n] = TerrainType::SEA;
+        }*/
+    }
+
+    for(int i = 0; i < height; ++i)
+    {
+        for(int j = 0; j < width; ++j)
+        {
+            if(heightmap[i][j] > 130)
+            {
+                map[i][j] = TerrainType::HILL;
+            }
+            else if(heightmap[i][j] <= 130 && heightmap[i][j] > 129)
+            {
+                map[i][j] = TerrainType::LAND;
+            }
+            else
+            {
+                map[i][j] = TerrainType::SEA;
+            }
         }
     }
 
-    srand(time(NULL));
-    int x = 0, y = 0;
+    /*int x = 0, y = 0;
 
     for(int k = 0; k < 40; ++k)
     {
@@ -108,7 +139,7 @@ LogicalMap *MapGenerator::generate(int width, int height)
                 map[x][y] = map[cx][cy];
             }
         }
-    } while (step > 1);
+    } while (step > 1);*/
 
     delete heightmap;
 
