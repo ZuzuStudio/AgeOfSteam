@@ -23,18 +23,18 @@ namespace generate_tile
                         }
                     }
                 }
-                map[i][j] = sum / neighbors;
+                map[i][j] += sum / neighbors;
 
             }
         }
 
-        /*for(int i = 0; i < height; ++i)
+        for(int i = 0; i < height; ++i)
         {
             for(int j = 0; j < width; ++j)
             {
                 qDebug() << map[i][j] << " ";
             }
-        }*/
+        }
     }
 
     int **height_map(int width, int height)
@@ -50,7 +50,7 @@ namespace generate_tile
         {
             for(int j = 0; j < width; ++j)
             {
-                map[i][j] = 0 + (rand() % 255);
+                map[i][j] = -255 + (rand() % 511);
             }
         }
 
@@ -84,11 +84,11 @@ LogicalMap *MapGenerator::generate(int width, int height)
     {
         for(int j = 0; j < width; ++j)
         {
-            if(heightmap[i][j] > 130)
+            if(heightmap[i][j] > 190)
             {
                 map[i][j] = TerrainType::HILL;
             }
-            else if(heightmap[i][j] <= 130 && heightmap[i][j] > 129)
+            else if(heightmap[i][j] <= 190 && heightmap[i][j] > 120)
             {
                 map[i][j] = TerrainType::LAND;
             }
