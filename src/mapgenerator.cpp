@@ -47,7 +47,7 @@ namespace generate_tile
                 //            + std::sin(std::sqrt(i * i + j * j) * 0.7) * 2;
                 //map[i][j] = -255 + (rand() % 511);
 
-                PerlinNoise pn(1, 0.1, 0.33, 1, 2);
+                PerlinNoise pn(1, 0.1, 0.35, 1, 0);
                 //qDebug() << pn.GetHeight(i, j);
                 map[i][j] = 1000 * pn.getHeight(i, j);
             }
@@ -81,10 +81,6 @@ LogicalMap *MapGenerator::generate(int width, int height)
     for(int i = 0; i < height; ++i)
     {
         map[i] = new TerrainType[width];
-        for(int n = 0; n < width; ++n)
-        {
-            map[i][n] = TerrainType::SEA;
-        }
     }
 
     for(int i = 0; i < height; ++i)
@@ -105,48 +101,6 @@ LogicalMap *MapGenerator::generate(int width, int height)
             }
         }
     }
-
-    /*int x = 0, y = 0;
-
-    for(int k = 0; k < 40; ++k)
-    {
-        x = rand() % (height - height / 5);
-        y = rand() % (width - width / 10);
-
-        for(int i = 0; i < height / 10; ++i)
-        {
-            for(int j = 0; j < width / 10; ++j)
-            {
-                map[i + x][j + y] = heightmap[i + x][j + y] > 100 ? TerrainType::HILL
-                                                                  : TerrainType::HILL;
-            }
-        }
-    }
-
-    int step = (width + height) / 2;
-
-    do
-    {
-        step /= 2;
-
-        for(int y = 0; y < width; y += step)
-        {
-            for(int x = 0; x < height; x += step)
-            {
-
-                int cx = x + ((rand() % 2) ? 0 : step);
-                int cy = y + ((rand() % 2) ? 0 : step);
-
-                cx = (cx / (step * 2)) * step * 2;
-                cy = (cy / (step * 2)) * step * 2;
-
-                cx = cx % height;
-                cy = cy % width;
-
-                map[x][y] = map[cx][cy];
-            }
-        }
-    } while (step > 1);*/
 
     delete heightmap;
 

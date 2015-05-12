@@ -21,5 +21,7 @@ int main(int argc, char **argv)
     MapWidget window(*model);
     window.show();
 
+    //delete model;
+
     return app.exec();
 }
