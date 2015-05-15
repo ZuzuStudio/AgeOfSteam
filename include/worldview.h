@@ -4,6 +4,7 @@
 #include <QPointF>
 #include <QRectF>
 #include <QDebug>
+#include "../include/area.h"
 
 class WorldView final
 {
@@ -36,12 +37,12 @@ public:
 
     QPointF getNW() const
     {
-        return transformToMapCordinates(screenNW);
+        return transformToMapCordinates(screenArea.nw());
     }
 
     QPointF getSE() const
     {
-        return transformToMapCordinates(screenSE);
+        return transformToMapCordinates(screenArea.se());
     }
 
     QPointF transformToScreenCordinates(const QPointF &point)const;
@@ -49,8 +50,10 @@ public:
     QRectF transformToScreenCordinates(QRectF rect, qreal adjust = 1.0)const; //by value semantic is essential
     QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
-    QPointF mapNW, mapSE;
-    QPointF screenNW, screenSE;
+    Area mapArea;
+    //QPointF mapNW, mapSE;
+    Area screenArea;
+    //QPointF screenNW, screenSE;
     QPointF mapViewCenter, screenViewCenter;
     qreal scale;
     qreal minimalScale, maximalScale;

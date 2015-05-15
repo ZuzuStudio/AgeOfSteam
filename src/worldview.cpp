@@ -17,9 +17,9 @@ QPointF directMul(const QPointF &a, const QPointF &b)
 WorldView::WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBottom,
                      qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom,
                      qreal scale):
-    mapNW(mapLeft, mapTop),
-    mapSE(mapRight, mapBottom),
-    mapViewCenter((mapNW + mapSE) / 2.0),
+    mapArea(QPointF(mapLeft, mapTop), QPointF(mapRight, mapBottom)),
+    screenArea(QPointF(screenLeft, screenTop), QPointF(screenRight, screenBottom)),
+    mapViewCenter((mapArea.nw() + mapArea.se()) / 2.0),
     scale(scale),
     maximalScale(10.0)// TODO without magic number
 {
@@ -28,11 +28,10 @@ WorldView::WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBotto
 
 void WorldView::setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom)
 {
-    screenNW = QPointF(screenLeft, screenTop);
-    screenSE = QPointF(screenRight, screenBottom);
-    screenViewCenter = (screenNW + screenSE) / 2.0;
-    auto screenDiagonal = screenNW - screenSE;
-    auto mapDiagonal = mapNW - mapSE;
+    screenArea = Area(QPointF(screenLeft, screenTop), QPointF(screenRight, screenBottom));
+    screenViewCenter = (screenArea.nw() + screenArea.se()) / 2.0;
+    auto screenDiagonal = screenArea.nw() - screenArea.se();
+    auto mapDiagonal = mapArea.nw() - mapArea.se();
     auto diagonalFactor = directDiv(screenDiagonal,  mapDiagonal);
     minimalScale = max(diagonalFactor.x(), -diagonalFactor.y());
     restoreCorrectness();
@@ -98,22 +97,22 @@ void WorldView::restoreCorrectness()
     if(scale > maximalScale)
         scale = maximalScale;
 
-    auto overhead = getNW().x() - mapNW.x();
+    auto overhead = getNW().x() - mapArea.nw().x();
 
     if(overhead < 0.0)
         mapViewCenter -= QPointF(overhead, 0.0);
 
-    overhead = getNW().y() - mapNW.y();
+    overhead = getNW().y() - mapArea.nw().y();
 
     if(overhead > 0.0)
         mapViewCenter -= QPointF(0.0, overhead);
 
-    overhead = getSE().x() - mapSE.x();
+    overhead = getSE().x() - mapArea.se().x();
 
     if(overhead > 0.0)
         mapViewCenter -= QPointF(overhead, 0.0);
 
-    overhead = getSE().y() - mapSE.y();
+    overhead = getSE().y() - mapArea.se().y();
 
     if(overhead < 0.0)
         mapViewCenter -= QPointF(0.0, overhead);
