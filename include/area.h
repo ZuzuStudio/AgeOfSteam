@@ -2,6 +2,8 @@
 #define AREA_H
 
 #include <QPointF>
+#include <QRectF>
+#include <QSizeF>
 
 // it can be stuct, but for possible future changes
 class Area
@@ -10,6 +12,22 @@ public:
     Area(QPointF nw, QPointF se):
         nwPrivate(nw),
         sePrivate(se)
+    {}
+
+    Area(qreal left, qreal top, qreal right, qreal bottom):
+        Area(QPointF(left, top), QPointF(right, bottom))
+    {}
+
+    Area(QPointF nw, QSizeF size):
+        Area(nw, QPointF(nw.x() + size.width(), nw.y() + size.height()))
+    {}
+
+    Area(qreal nwX, qreal nwY, QSizeF size):
+        Area(QPointF(nwX, nwY), size)
+    {}
+
+    Area(QRectF rect):
+        Area(rect.topLeft(), rect.bottomLeft())
     {}
 
     Area(const Area &) = default;

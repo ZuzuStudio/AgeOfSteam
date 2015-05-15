@@ -9,16 +9,14 @@
 class WorldView final
 {
 public:
-    WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBottom,
-              qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom,
-              qreal scale);
+    WorldView(Area mapArea, Area screenArea, qreal scale);
     WorldView(const WorldView &) = default;
     WorldView &operator=(const WorldView &) = default;
     WorldView(WorldView &&) = default;
     WorldView &operator =(WorldView &&) = default;
     ~WorldView() = default;
 
-    void setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom);
+    void setScreenParameter(Area newScreenArea);
 
     void moveScreen(QPointF screenShift);
 
@@ -58,6 +56,7 @@ private:
     qreal scale;
     qreal minimalScale, maximalScale;
 
+    void applyNewScreenParameter();
     void restoreCorrectness();
 
     friend QDebug operator<<(QDebug dbg, const WorldView &wv)

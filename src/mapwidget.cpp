@@ -21,11 +21,7 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
 
     grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
-    worldView = new WorldView(grid->leftMapBorder(), grid->rightMapBorder(),
-                              grid->topMapBorder(), grid->bottomMapBorder(),
-                              0, this->size().width(),
-                              0, this->size().height(),
-                              1.0);
+    worldView = new WorldView(grid->mapBorder(), Area(0, 0, this->size()), 1.0);
 
     imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
     savedImage  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
@@ -138,29 +134,6 @@ void MapWidget::paintEvent(QPaintEvent *event)
     mainPainter.drawImage(0, 0, *imageBufer);
 #endif
 
-
-//    if (scale < 0.35) // full map rastr
-//    {
-//        p.scale(scale, scale);
-//        HG->setScale(scale);
-//        //HG->draw(&p);
-//        //HG->gluingTogetherClasters(&p);
-//    }
-//    else // we need to show svg for low detalised texture
-//    {
-//        if (image->size() != this->size())
-//        {
-//            delete image;
-//            image = new QImage(size(), QImage::Format_ARGB32_Premultiplied);
-//        }
-
-//        QPainter imagePainter(image);
-//        imagePainter.fillRect(0, 0, size().width(), size().height(), Qt::white);
-//        HG->setScale(scale);
-//        HG->drawSVG(renderer, &imagePainter);
-//        //-------------//
-//        p.drawImage(0, 0, *image);
-//    }
     Q_UNUSED(event);
 }
 
@@ -173,7 +146,7 @@ void MapWidget::resizeEvent(QResizeEvent *event)
     imageBufer = newImageBufer;
     newImageBufer = nullptr;
 
-    worldView->setScreenParameter(0.0, width(), 0.0, height());
+    worldView->setScreenParameter(Area(0, 0, size()));
     firstTime = 0;
 
     Q_UNUSED(event);

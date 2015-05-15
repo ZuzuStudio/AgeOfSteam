@@ -14,21 +14,24 @@ QPointF directMul(const QPointF &a, const QPointF &b)
     return QPointF(a.x() * b.x(), a.y() * b.y());
 }
 
-WorldView::WorldView(qreal mapLeft, qreal mapRight, qreal mapTop, qreal mapBottom,
-                     qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom,
-                     qreal scale):
-    mapArea(QPointF(mapLeft, mapTop), QPointF(mapRight, mapBottom)),
-    screenArea(QPointF(screenLeft, screenTop), QPointF(screenRight, screenBottom)),
+WorldView::WorldView(Area mapArea, Area screenArea, qreal scale):
+    mapArea(mapArea),
+    screenArea(screenArea),
     mapViewCenter((mapArea.nw() + mapArea.se()) / 2.0),
     scale(scale),
     maximalScale(10.0)// TODO without magic number
 {
-    setScreenParameter(screenLeft, screenRight, screenTop, screenBottom);
+    applyNewScreenParameter();
 }
 
-void WorldView::setScreenParameter(qreal screenLeft, qreal screenRight, qreal screenTop, qreal screenBottom)
+void WorldView::setScreenParameter(Area newScreenArea)
 {
-    screenArea = Area(QPointF(screenLeft, screenTop), QPointF(screenRight, screenBottom));
+    screenArea = newScreenArea;
+    applyNewScreenParameter();
+}
+
+void WorldView::applyNewScreenParameter()
+{
     screenViewCenter = (screenArea.nw() + screenArea.se()) / 2.0;
     auto screenDiagonal = screenArea.nw() - screenArea.se();
     auto mapDiagonal = mapArea.nw() - mapArea.se();
