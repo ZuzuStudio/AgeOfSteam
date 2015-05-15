@@ -35,7 +35,8 @@ HEADERS += \
     include/hexagonalgrid.h \
     include/mapgenerator.h \
     include/worldview.h \
-    include/logicalmap.h
+    include/logicalmap.h \
+    include/area.h
 
 RESOURCES += \
     res/res.qrc
