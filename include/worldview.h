@@ -44,8 +44,8 @@ public:
 
     QPointF transformToScreenCordinates(const QPointF &point)const;
     QPointF transformToMapCordinates(const QPointF &point)const;
-    QRectF transformToScreenCordinates(QRectF rect, qreal adjust = 1.0)const; //by value semantic is essential
-    QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
+    Area transformToScreenCordinates(const Area &area)const;
+    Area transformToMapCordinates(const Area &area)const;
 private:
     Area mapArea;
     Area screenArea;

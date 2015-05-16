@@ -66,23 +66,16 @@ QPointF WorldView::transformToMapCordinates(const QPointF &point) const
                    mapViewCenter.y() + (screenViewCenter.y() - point.y()) / scalePrivate);
 }
 
-QRectF WorldView::transformToScreenCordinates(QRectF rect, qreal adjust) const
+Area WorldView::transformToScreenCordinates(const Area &area) const
 {
-    QPointF center = rect.center();
-    QSizeF size(rect.size() * scalePrivate);
-    size.rwidth() += adjust;
-    size.rheight() += adjust;
-    rect.setSize(size);
-    rect.moveCenter(transformToScreenCordinates(center));
-    return rect;
+    return Area(transformToScreenCordinates(area.nw()),
+                transformToScreenCordinates(area.se()));
 }
 
-QRectF WorldView::transformToMapCordinates(QRectF rect) const
+Area WorldView::transformToMapCordinates(const Area &area) const
 {
-    QPointF center = rect.center();
-    rect.setSize(rect.size() / scalePrivate);
-    rect.moveCenter(transformToMapCordinates(center));
-    return rect;
+    return Area(transformToMapCordinates(area.nw()),
+                transformToMapCordinates(area.se()));
 }
 
 void WorldView::restoreCorrectness()

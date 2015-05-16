@@ -18,19 +18,21 @@ public:
 
     QPointF cellCenter(int columnIndex, int rowIndex)const;
 
-    QPointF northWestCorner(int columnIndex, int rowIndex)const
+    QPointF cellNW(int columnIndex, int rowIndex)const
     {
         return cellCenter(columnIndex, rowIndex)
                - QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
     }
 
-    QRectF tilingBox(int columnIndex, int rowIndex)const
+    QPointF cellSE(int columnIndex, int rowIndex)const
     {
-        QRectF result(0.0, 0.0,
-                      2.0 * floatHexagonSmallRadius,
-                      2.0 * floatHexagonBigRadius);
-        result.moveCenter(cellCenter(columnIndex, rowIndex));
-        return result;
+        return cellCenter(columnIndex, rowIndex)
+               + QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
+    }
+
+    Area cellArea(int columnIndex, int rowIndex)const
+    {
+        return Area(cellNW(columnIndex, rowIndex), cellSE(columnIndex, rowIndex));
     }
 
     QPoint indices(QPointF point, QPointF directionToView)const;

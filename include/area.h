@@ -5,8 +5,7 @@
 #include <QRectF>
 #include <QSizeF>
 
-// it can be stuct, but for possible future changes
-class Area
+class Area final
 {
 public:
     Area(QPointF nw, QPointF se):
@@ -54,6 +53,17 @@ public:
     QPointF &se()
     {
         return sePrivate;
+    }
+
+    QRectF toRectF()const
+    {
+        return QRectF(nwPrivate, sePrivate);
+    }
+
+    Area adjust(qreal value)const
+    {
+        auto adjustment = QPointF(value, value);
+        return Area(nwPrivate - adjustment, sePrivate + adjustment);
     }
 
 private:
