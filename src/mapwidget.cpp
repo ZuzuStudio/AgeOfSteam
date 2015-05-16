@@ -26,15 +26,15 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
     savedImage  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
 
-    auto lodSea = new LevelOfDetalisation(worldView->getScale());
+    auto lodSea = new LevelOfDetalisation(worldView->scale());
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
     terrainTypes.push_back(lodSea);
 
-    auto lodLand = new LevelOfDetalisation(worldView->getScale());
+    auto lodLand = new LevelOfDetalisation(worldView->scale());
     lodLand->addRenderer(QString(":/res/landFlatLod1_res.svg"), 0.0);
     terrainTypes.push_back(lodLand);
 
-    auto lodHill = new LevelOfDetalisation(worldView->getScale());
+    auto lodHill = new LevelOfDetalisation(worldView->scale());
     lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
     lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.1);
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
@@ -60,7 +60,7 @@ MapWidget::~MapWidget()
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
-    qDebug() << worldView->getScale();
+    qDebug() << worldView->scale();
     QPainter buferPainter(imageBufer);
     buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
     //buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::black);
@@ -177,12 +177,12 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
         break;
 
     case Qt::Key_Down:
-        worldView->increaseScale();
+        worldView->modifyScale(1.01);
         repaint();
         break;
 
     case Qt::Key_Up:
-        worldView->decreaseScale();
+        worldView->modifyScale(1.0 / 1.01);
         repaint();
         break;
 

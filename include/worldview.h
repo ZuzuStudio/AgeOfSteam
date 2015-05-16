@@ -25,12 +25,11 @@ public:
         moveScreen(QPointF(x, y));
     }
 
-    void decreaseScale();
-    void increaseScale();
+    void modifyScale(qreal multiplayer);
 
-    const qreal &getScale() const
+    const qreal &scale() const
     {
-        return scale;
+        return scalePrivate;
     }
 
     QPointF getNW() const
@@ -49,11 +48,9 @@ public:
     QRectF transformToMapCordinates(QRectF rect)const; //by value semantic is essential
 private:
     Area mapArea;
-    //QPointF mapNW, mapSE;
     Area screenArea;
-    //QPointF screenNW, screenSE;
     QPointF mapViewCenter, screenViewCenter;
-    qreal scale;
+    qreal scalePrivate;
     qreal minimalScale, maximalScale;
 
     void applyNewScreenParameter();
@@ -61,7 +58,7 @@ private:
 
     friend QDebug operator<<(QDebug dbg, const WorldView &wv)
     {
-        dbg.nospace() << "WV(" << wv.mapViewCenter << "; " << wv.scale << ")";
+        dbg.nospace() << "WV(" << wv.mapViewCenter << "; " << wv.scalePrivate << ")";
 
         return dbg.space();
     }
