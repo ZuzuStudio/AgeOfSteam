@@ -5,6 +5,7 @@
 #include <QRectF>
 #include <QDebug>
 #include "../include/area.h"
+#include "../include/transformator.h"
 
 class WorldView final
 {
@@ -30,6 +31,16 @@ public:
     const qreal &scale() const
     {
         return scalePrivate;
+    }
+
+    FollowingTransformator followingTransformator()const
+    {
+        return FollowingTransformator(mapViewCenter, screenViewCenter, scalePrivate);
+    }
+
+    FixedScaleTransformator fixedScaleTransformator(qreal scale)const
+    {
+        return FixedScaleTransformator(mapViewCenter, screenViewCenter, scale);
     }
 
     QPointF getNW() const

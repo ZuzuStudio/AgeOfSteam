@@ -26,7 +26,8 @@ SOURCES += \
     src/hexagonalgrid.cpp \
     src/mapgenerator.cpp \
     src/worldview.cpp \
-    src/logicalmap.cpp
+    src/logicalmap.cpp \
+    src/transformator.cpp
 
 HEADERS += \
     include/mainwindow.h \
@@ -36,7 +37,8 @@ HEADERS += \
     include/mapgenerator.h \
     include/worldview.h \
     include/logicalmap.h \
-    include/area.h
+    include/area.h \
+    include/transformator.h
 
 RESOURCES += \
     res/res.qrc

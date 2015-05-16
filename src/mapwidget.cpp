@@ -206,7 +206,9 @@ void MapWidget::drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF scre
             terrainTypes[model.cell(column, row)]
             ->renderer()
             ->render(painter,
-                     worldView->transformToScreenCordinates(grid->cellArea(column, row))
+                     worldView
+                     ->followingTransformator()
+                     .transformToScreenCordinates(grid->cellArea(column, row))
                      .adjust(0.5)
                      .toRectF());
         }
