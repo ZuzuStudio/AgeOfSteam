@@ -15,6 +15,7 @@ public:
     TransformatorInterface &operator=(TransformatorInterface &&rhs) = default;
     virtual ~TransformatorInterface() = 0;
 
+    virtual qreal scale()const = 0;
     virtual QPointF transformToScreenCordinates(const QPointF &point)const = 0;
     virtual QPointF transformToMapCordinates(const QPointF &point)const = 0;
     virtual Area transformToScreenCordinates(const Area &point)const = 0;
@@ -29,7 +30,7 @@ protected:
                           const qreal &scale):
         mapViewCenter(mapViewCenter),
         screenViewCenter(screenViewCenter),
-        scale(scale)
+        scalePrivate(scale)
     {}
 
 public:
@@ -39,6 +40,11 @@ public:
     AbstractTransformator &operator=(AbstractTransformator &&rhs) = default;
     ~AbstractTransformator() = 0;
 
+    virtual qreal scale()const override final
+    {
+        return scalePrivate;
+    }
+
     QPointF transformToScreenCordinates(const QPointF &point)const override final;
     QPointF transformToMapCordinates(const QPointF &point)const override final;
     Area transformToScreenCordinates(const Area &area)const override final;
@@ -46,7 +52,7 @@ public:
 
 private:
     const QPointF &mapViewCenter, &screenViewCenter;
-    const qreal &scale;
+    const qreal &scalePrivate;
 };
 
 class FollowingTransformator final: public AbstractTransformator

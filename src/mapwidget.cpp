@@ -6,25 +6,25 @@
 #include <algorithm>
 
 
-MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
+MapWidget::MapWidget(GraphicalMap &model, QWidget *parent) :
     QWidget(parent),
     model(model),
-    grid(nullptr),
+    //grid(nullptr),
     worldView(nullptr),
     imageBufer(nullptr),
-    fringe(200),
-    firstTime(0)
+    fringe(200)//,
+    //firstTime(0)
 {
     fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
     fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
 
-    grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
-    worldView = new WorldView(grid->mapBorder(), Area(0, 0, this->size()), 1.0);
+    //grid = new HexagonalGrid(this->model.columns(), this->model.rows(), 128);//256 px full height of svg
+    worldView = new WorldView(model.mapBorder(), Area(0, 0, this->size()), 1.0);
 
     imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
-    savedImage  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
+    //savedImage  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
 
-    auto lodSea = new LevelOfDetalisation(worldView->scale());
+    /*auto lodSea = new LevelOfDetalisation(worldView->scale());
     lodSea->addRenderer(QString(":/res/seeFlatLod1_res.svg"), 0.0);
     terrainTypes.push_back(lodSea);
 
@@ -36,7 +36,7 @@ MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     lodHill->addRenderer(QString(":/res/hillFlatLod3_res.svg"), 0.0);
     lodHill->addRenderer(QString(":/res/hillFlatLod2_res.svg"), 0.1);
     lodHill->addRenderer(QString(":/res/hillFlatLod1_res.svg"), 0.5);
-    terrainTypes.push_back(lodHill);
+    terrainTypes.push_back(lodHill);*/
 
     // NOTE maybe all controll and interaction place in other class
     //setAttribute(Qt::WA_AcceptTouchEvents);
@@ -46,14 +46,8 @@ MapWidget::~MapWidget()
 {
     delete imageBufer;
     imageBufer = nullptr;
-
-    for(auto it : terrainTypes)
-        delete it;
-
     delete worldView;
     worldView = nullptr;
-    delete grid;
-    grid = nullptr;
 }
 
 void MapWidget::paintEvent(QPaintEvent *event)
@@ -61,9 +55,11 @@ void MapWidget::paintEvent(QPaintEvent *event)
     qDebug() << worldView->scale();
     QPainter buferPainter(imageBufer);
     buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
-    //buferPainter.fillRect(0, 0, size().width(), size().height(), Qt::black);
+    buferPainter.fillRect(0, 0, fringedArea.width(), fringedArea.height(), Qt::black);
 
-    if(firstTime == 0)
+    model.drawArea(buferPainter, Area(fringedArea), worldView->followingTransformator());
+
+    /*if(firstTime == 0)
     {
         QPainter savedPainter(savedImage);
         savedPainter.translate(fringe, 0);
@@ -79,7 +75,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
         auto screenSavedSE = worldView->followingTransformator().transformToScreenCordinates(savedSE);
 
         drawOldBufer(&buferPainter, *savedImage, screenSavedNW, screenSavedSE);
-        /*qDebug() << "overhead";
+        qDebug() << "overhead";
         auto ovNW = QPointF(fringedArea.left(), screenSavedNW.y());
         auto ovSE = fringedArea.topRight();
         qDebug() << ovNW << ovSE;
@@ -99,14 +95,14 @@ void MapWidget::paintEvent(QPaintEvent *event)
         drawMapSubarea(&buferPainter, ovNW, ovSE);
         ovNW = QPointF(fringedArea.left(),fringedArea.center().y()-20);
         ovSE = QPointF(fringedArea.right(),fringedArea.center().y()+20);
-        drawMapSubarea(&buferPainter, ovNW, ovSE);*/
+        drawMapSubarea(&buferPainter, ovNW, ovSE);
     }
 
-    firstTime = (firstTime + 1) % 10;
+    firstTime = (firstTime + 1) % 10;*/
 
 
 
-    qDebug() << "in paintEvent";
+    /*qDebug() << "in paintEvent";
     qDebug() << *worldView;
     qDebug() << savedNW << savedSE;
     {
@@ -114,7 +110,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
         auto screenSavedSE = worldView->followingTransformator().transformToScreenCordinates(savedSE);
         auto screenSavedDiag = screenSavedNW - screenSavedSE;
         qDebug() << screenSavedNW << screenSavedSE << screenSavedDiag;
-    }
+    }*/
 
     QPainter mainPainter(this);
 #ifdef CONTROL
@@ -145,7 +141,7 @@ void MapWidget::resizeEvent(QResizeEvent *event)
     newImageBufer = nullptr;
 
     worldView->setScreenParameter(Area(0, 0, size()));
-    firstTime = 0;
+    //firstTime = 0;
 
     Q_UNUSED(event);
 }
@@ -190,7 +186,7 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MapWidget::drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE)
+/*void MapWidget::drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE)
 {
     auto nwIndex = grid->indices(worldView->followingTransformator().transformToMapCordinates(screenNW),
                                  QPointF(-1.0, -1.0)) - QPoint(1, 1);
@@ -232,7 +228,7 @@ void MapWidget::drawOldBufer(QPainter *painter, QImage image,
     painter->setTransform(QTransform(sx, 0.0, 0.0, sy, dx, dy));
     painter->drawImage(0, 0, image);
     painter->restore();
-}
+}*/
 
 /**
  * IOS & Android compability

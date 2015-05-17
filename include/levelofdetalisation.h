@@ -7,15 +7,14 @@
 class LevelOfDetalisation
 {
 public:
-    LevelOfDetalisation(const qreal &referenceToCurrentScale);
+    LevelOfDetalisation();
     LevelOfDetalisation(const LevelOfDetalisation &) = delete;
 
     ~LevelOfDetalisation() noexcept;
 
     void addRenderer(const QString &fileName, qreal downLimit);
-    QSvgRenderer *renderer() noexcept;
+    QSvgRenderer *renderer(qreal currentScale) noexcept;
 private:
-    const qreal &currentScale;
     std::vector<QSvgRenderer *> renderers;
     std::vector<qreal> limits;
 };

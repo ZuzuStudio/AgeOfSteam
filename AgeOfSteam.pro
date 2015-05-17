@@ -27,7 +27,8 @@ SOURCES += \
     src/mapgenerator.cpp \
     src/worldview.cpp \
     src/logicalmap.cpp \
-    src/transformator.cpp
+    src/transformator.cpp \
+    src/graphicalmap.cpp
 
 HEADERS += \
     include/mainwindow.h \
@@ -38,7 +39,8 @@ HEADERS += \
     include/worldview.h \
     include/logicalmap.h \
     include/area.h \
-    include/transformator.h
+    include/transformator.h \
+    include/graphicalmap.h
 
 RESOURCES += \
     res/res.qrc

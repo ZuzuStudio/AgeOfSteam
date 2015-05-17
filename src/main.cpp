@@ -17,7 +17,8 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     LogicalMap model(201, 201);
-    MapWidget window(model);
+    GraphicalMap view(model);
+    MapWidget window(view);
     window.show();
 
     return app.exec();

@@ -3,8 +3,7 @@
 
 using namespace std;
 
-LevelOfDetalisation::LevelOfDetalisation(const qreal &referenceToCurrentScale):
-    currentScale(referenceToCurrentScale)
+LevelOfDetalisation::LevelOfDetalisation()
 {
     // TODO Magic number move to config files
     renderers.reserve(4);
@@ -29,7 +28,7 @@ void LevelOfDetalisation::addRenderer(const QString &fileName, qreal downLimit)
     assert(renderers.size() == limits.size());
 }
 
-QSvgRenderer *LevelOfDetalisation::renderer() noexcept
+QSvgRenderer *LevelOfDetalisation::renderer(qreal currentScale) noexcept
 {
     assert(renderers.size() == limits.size());
     auto size = limits.size();
