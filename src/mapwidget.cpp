@@ -5,8 +5,6 @@
 #define CONTROL
 #include <algorithm>
 
-// need draw transformed old bufer
-// need draw strip
 
 MapWidget::MapWidget(LogicalMap &model, QWidget *parent) :
     QWidget(parent),
@@ -71,14 +69,14 @@ void MapWidget::paintEvent(QPaintEvent *event)
         savedPainter.translate(fringe, 0);
         drawMapSubarea(&savedPainter, fringedArea.topLeft(), fringedArea.bottomRight());
         buferPainter.drawImage(0, 0, *savedImage);
-        savedNW = worldView->transformToMapCordinates(fringedArea.topLeft());
-        savedSE = worldView->transformToMapCordinates(fringedArea.bottomRight());
+        savedNW = worldView->followingTransformator().transformToMapCordinates(fringedArea.topLeft());
+        savedSE = worldView->followingTransformator().transformToMapCordinates(fringedArea.bottomRight());
     }
     else
     {
         buferPainter.translate(0, fringe);
-        auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
-        auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
+        auto screenSavedNW = worldView->followingTransformator().transformToScreenCordinates(savedNW);
+        auto screenSavedSE = worldView->followingTransformator().transformToScreenCordinates(savedSE);
 
         drawOldBufer(&buferPainter, *savedImage, screenSavedNW, screenSavedSE);
         /*qDebug() << "overhead";
@@ -112,8 +110,8 @@ void MapWidget::paintEvent(QPaintEvent *event)
     qDebug() << *worldView;
     qDebug() << savedNW << savedSE;
     {
-        auto screenSavedNW = worldView->transformToScreenCordinates(savedNW);
-        auto screenSavedSE = worldView->transformToScreenCordinates(savedSE);
+        auto screenSavedNW = worldView->followingTransformator().transformToScreenCordinates(savedNW);
+        auto screenSavedSE = worldView->followingTransformator().transformToScreenCordinates(savedSE);
         auto screenSavedDiag = screenSavedNW - screenSavedSE;
         qDebug() << screenSavedNW << screenSavedSE << screenSavedDiag;
     }
@@ -194,12 +192,13 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 
 void MapWidget::drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE)
 {
-    auto nwIndex = grid->indices(worldView->transformToMapCordinates(screenNW), QPointF(-1.0, -1.0)) - QPoint(1, 1);
-    auto seIndex = grid->indices(worldView->transformToMapCordinates(screenSE), QPointF(+1.0, +1.0)) + QPoint(1, 1);
+    auto nwIndex = grid->indices(worldView->followingTransformator().transformToMapCordinates(screenNW),
+                                 QPointF(-1.0, -1.0)) - QPoint(1, 1);
+    auto seIndex = grid->indices(worldView->followingTransformator().transformToMapCordinates(screenSE),
+                                 QPointF(+1.0, +1.0)) + QPoint(1, 1);
     auto diff = seIndex - nwIndex;
     qDebug() << diff << diff.x() * diff.y();
 
-    // TODO in this part switch beetwen cluster and svg
     for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
         for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)
         {

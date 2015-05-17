@@ -62,7 +62,7 @@ public:
 
     Area adjust(qreal value)const
     {
-        auto adjustment = QPointF(value, value);
+        auto adjustment = QPointF(value, -value);
         return Area(nwPrivate - adjustment, sePrivate + adjustment);
     }
 

@@ -21,9 +21,9 @@ public:
 
     void moveScreen(QPointF screenShift);
 
-    void moveScreen(qreal x, qreal y)
+    void moveScreen(qreal dx, qreal dy)
     {
-        moveScreen(QPointF(x, y));
+        moveScreen(QPointF(dx, dy));
     }
 
     void modifyScale(qreal multiplayer);
@@ -43,20 +43,6 @@ public:
         return FixedScaleTransformator(mapViewCenter, screenViewCenter, scale);
     }
 
-    QPointF getNW() const
-    {
-        return transformToMapCordinates(screenArea.nw());
-    }
-
-    QPointF getSE() const
-    {
-        return transformToMapCordinates(screenArea.se());
-    }
-
-    QPointF transformToScreenCordinates(const QPointF &point)const;
-    QPointF transformToMapCordinates(const QPointF &point)const;
-    Area transformToScreenCordinates(const Area &area)const;
-    Area transformToMapCordinates(const Area &area)const;
 private:
     Area mapArea;
     Area screenArea;

@@ -54,30 +54,6 @@ void WorldView::modifyScale(qreal multiplayer)
     restoreCorrectness();
 }
 
-QPointF WorldView::transformToScreenCordinates(const QPointF &point) const
-{
-    return QPointF(screenViewCenter.x() + (point.x() - mapViewCenter.x()) * scalePrivate,
-                   screenViewCenter.y() + (mapViewCenter.y() - point.y()) * scalePrivate);
-}
-
-QPointF WorldView::transformToMapCordinates(const QPointF &point) const
-{
-    return QPointF(mapViewCenter.x() + (point.x() - screenViewCenter.x()) / scalePrivate,
-                   mapViewCenter.y() + (screenViewCenter.y() - point.y()) / scalePrivate);
-}
-
-Area WorldView::transformToScreenCordinates(const Area &area) const
-{
-    return Area(transformToScreenCordinates(area.nw()),
-                transformToScreenCordinates(area.se()));
-}
-
-Area WorldView::transformToMapCordinates(const Area &area) const
-{
-    return Area(transformToMapCordinates(area.nw()),
-                transformToMapCordinates(area.se()));
-}
-
 void WorldView::restoreCorrectness()
 {
     // N.B! order between scale and move adjustment is essential
@@ -87,22 +63,25 @@ void WorldView::restoreCorrectness()
     if(scalePrivate > maximalScale)
         scalePrivate = maximalScale;
 
-    auto overhead = getNW().x() - mapArea.nw().x();
+    auto tr = followingTransformator();
+    auto inMapScreenArea = tr.transformToMapCordinates(screenArea);
+
+    auto overhead = inMapScreenArea.nw().x() - mapArea.nw().x();
 
     if(overhead < 0.0)
         mapViewCenter -= QPointF(overhead, 0.0);
 
-    overhead = getNW().y() - mapArea.nw().y();
+    overhead = inMapScreenArea.nw().y() - mapArea.nw().y();
 
     if(overhead > 0.0)
         mapViewCenter -= QPointF(0.0, overhead);
 
-    overhead = getSE().x() - mapArea.se().x();
+    overhead = inMapScreenArea.se().x() - mapArea.se().x();
 
     if(overhead > 0.0)
         mapViewCenter -= QPointF(overhead, 0.0);
 
-    overhead = getSE().y() - mapArea.se().y();
+    overhead = inMapScreenArea.se().y() - mapArea.se().y();
 
     if(overhead < 0.0)
         mapViewCenter -= QPointF(0.0, overhead);
