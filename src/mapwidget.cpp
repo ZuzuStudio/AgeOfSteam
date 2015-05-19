@@ -58,7 +58,9 @@ void MapWidget::paintEvent(QPaintEvent *event)
     buferPainter.fillRect(0, 0, fringedArea.width(), fringedArea.height(), Qt::black);
     buferPainter.translate(fringe, fringe);
 
-    qDebug() << Area(fringedArea);
+    qDebug() << "fringed:" << Area(fringedArea) << "bare:" << Area(0, 0, size());
+    qDebug() << "bare inMap:" <<
+             worldView->followingTransformator().transformToMapCordinates(Area(0, 0, size()));
 
     model.drawArea(buferPainter, Area(fringedArea), worldView->followingTransformator());
 

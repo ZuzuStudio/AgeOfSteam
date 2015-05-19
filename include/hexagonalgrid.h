@@ -21,13 +21,13 @@ public:
     QPointF cellNW(int columnIndex, int rowIndex)const
     {
         return cellCenter(columnIndex, rowIndex)
-               - QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
+               - QPointF(floatHexagonSmallRadius, -floatHexagonBigRadius);
     }
 
     QPointF cellSE(int columnIndex, int rowIndex)const
     {
         return cellCenter(columnIndex, rowIndex)
-               + QPointF(floatHexagonSmallRadius, floatHexagonBigRadius);
+               + QPointF(floatHexagonSmallRadius, -floatHexagonBigRadius);
     }
 
     Area cellArea(int columnIndex, int rowIndex)const
