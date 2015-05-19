@@ -39,10 +39,15 @@ void GraphicalMap::drawArea(QPainter &painter, const Area &inScreenArea,
                             const TransformatorInterface &trator) const
 {
     auto inMapArea = trator.transformToMapCordinates(inScreenArea);
+    qDebug() << "inMap:" << inMapArea;
+    qDebug() << "mapBorder" << grid->mapBorder();
     auto nwIndex = grid->indices(inMapArea.nw(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
     auto seIndex = grid->indices(inMapArea.se(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
     auto diff = seIndex - nwIndex;
+    qDebug() << "nwi:" << nwIndex << "sei:" << seIndex;
     qDebug() << diff << diff.x() * diff.y();
+    qDebug() << Area(grid->cellCenter(nwIndex.x(), nwIndex.y()), grid->cellCenter(seIndex.x(), seIndex.y()));
+
 
     for(auto column = nwIndex.x(); column <= seIndex.x(); ++column)
         for(auto row = nwIndex.y(); row <= seIndex.y(); ++row)

@@ -5,6 +5,8 @@
 #include <QRectF>
 #include <QSizeF>
 
+#include <QDebug>
+
 class Area final
 {
 public:
@@ -26,7 +28,7 @@ public:
     {}
 
     Area(QRectF rect):
-        Area(rect.topLeft(), rect.bottomLeft())
+        Area(rect.topLeft(), rect.bottomRight())
     {}
 
     Area(const Area &) = default;
@@ -64,6 +66,14 @@ public:
     {
         auto adjustment = QPointF(value, -value);
         return Area(nwPrivate - adjustment, sePrivate + adjustment);
+    }
+
+    friend QDebug operator<<(QDebug dbg, const Area &a)
+    {
+        dbg.nospace() << "Area( nw: (" << a.nwPrivate.x() << ", " << a.nwPrivate.y()
+                      << "); se:(" << a.sePrivate.x() << ", " << a.sePrivate.y() << "))";
+
+        return dbg.space();
     }
 
 private:

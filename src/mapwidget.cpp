@@ -56,6 +56,9 @@ void MapWidget::paintEvent(QPaintEvent *event)
     QPainter buferPainter(imageBufer);
     buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
     buferPainter.fillRect(0, 0, fringedArea.width(), fringedArea.height(), Qt::black);
+    buferPainter.translate(fringe, fringe);
+
+    qDebug() << Area(fringedArea);
 
     model.drawArea(buferPainter, Area(fringedArea), worldView->followingTransformator());
 
@@ -125,7 +128,7 @@ void MapWidget::paintEvent(QPaintEvent *event)
     mainPainter.drawLine(width(), height(), 0, height());
     mainPainter.drawLine(0, height(), 0, 0);
 #else
-    mainPainter.drawImage(0, 0, *imageBufer);
+    mainPainter.drawImage(-fringe, -fringe, *imageBufer);
 #endif
 
     Q_UNUSED(event);
