@@ -6,7 +6,6 @@
 #include <ctime>
 #include <QFile>
 #include <QTextStream>
-//#include "hexagonalgrid.h"
 #include "include/logicalmap.h"
 
 enum Territori : unsigned {Land, Sea};

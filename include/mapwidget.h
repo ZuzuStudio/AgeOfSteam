@@ -2,7 +2,6 @@
 #define MAPWIDGET_H
 
 #include <QWidget>
-//#include <QtSvg/QSvgRenderer>
 #include <QImage>
 #include <QPainter>
 #include <QKeyEvent>
@@ -27,18 +26,10 @@ protected:
     //bool event(QEvent *event);
 private:
     GraphicalMap &model;
-    //LogicalMap &model;
-    //HexagonalGrid *grid;
     WorldView *worldView;
-    //std::vector<LevelOfDetalisation *> terrainTypes; // NOTE maybe place in other class
     QImage *imageBufer;
     int fringe;
     QRectF fringedArea;
-
-
-
-    //void drawMapSubarea(QPainter *painter, QPointF screenNW, QPointF screenSE);
-    //void drawOldBufer(QPainter *painter, QImage image/*N.B! by value*/, QPointF screenSavedNW, QPointF screenSavedSE);
 };
 
 #endif // MAPWIDGET_H
