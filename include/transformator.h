@@ -78,7 +78,8 @@ public:
     FixedScaleTransformator(const QPointF &mapViewCenter,
                             const QPointF &screenViewCenter,
                             qreal scale):
-        AbstractTransformator(mapViewCenter, screenViewCenter, scale)
+        AbstractTransformator(mapViewCenter, screenViewCenter, scalePrivate),
+        scalePrivate(scale)
     {}
 
     FixedScaleTransformator(const FixedScaleTransformator &original) = delete;
@@ -86,6 +87,9 @@ public:
     FixedScaleTransformator(FixedScaleTransformator &&victim) = default;
     FixedScaleTransformator &operator=(FixedScaleTransformator &&rhs) = default;
     ~FixedScaleTransformator() = default;
+
+private:
+    qreal scalePrivate;
 };
 
 #endif // TRANSFORMATOR_H

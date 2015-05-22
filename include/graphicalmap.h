@@ -27,7 +27,7 @@ public:
     }
 
     void drawArea(QPainter &painter, const Area &inScreenArea,
-                  const TransformatorInterface &trator) const;
+                  const TransformatorInterface *trator) const;
 
 private:
     LogicalMap &model;

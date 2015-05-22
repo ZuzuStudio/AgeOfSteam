@@ -2,6 +2,7 @@
 #define FRAMEMEMOISATOR
 
 #include "include/area.h"
+#include "include/frame.h"
 
 class QPainter;
 class GraphicalMap;
@@ -23,9 +24,12 @@ public:
 
 private:
     GraphicalMap &model;
-    QImage *imageBufer;
+    //QImage *imageBufer;
+    std::vector<Frame> frames;
     int fringe;
     Area fringedArea;
+
+    int firstTime;
 };
 
 #endif // FRAMEMEMOISATOR

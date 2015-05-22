@@ -42,7 +42,8 @@ HEADERS += \
     include/area.h \
     include/transformator.h \
     include/graphicalmap.h \
-    include/framememoisator.h
+    include/framememoisator.h \
+    include/frame.h
 
 RESOURCES += \
     res/res.qrc

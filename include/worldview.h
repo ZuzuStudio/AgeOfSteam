@@ -33,14 +33,14 @@ public:
         return scalePrivate;
     }
 
-    FollowingTransformator followingTransformator()const
+    FollowingTransformator *followingTransformator()const
     {
-        return FollowingTransformator(mapViewCenter, screenViewCenter, scalePrivate);
+        return new FollowingTransformator(mapViewCenter, screenViewCenter, scalePrivate);
     }
 
-    FixedScaleTransformator fixedScaleTransformator(qreal scale)const
+    FixedScaleTransformator *fixedScaleTransformator(qreal scale)const
     {
-        return FixedScaleTransformator(mapViewCenter, screenViewCenter, scale);
+        return new FixedScaleTransformator(mapViewCenter, screenViewCenter, scale);
     }
 
 private:
