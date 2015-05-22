@@ -1,16 +1,15 @@
 #ifndef GRAPHICALMAP_H
 #define GRAPHICALMAP_H
 
-#include <vector>
-
-#include <QPainter>
-
 #include "include/area.h"
-#include "include/logicalmap.h"
 #include "include/hexagonalgrid.h"
-#include "include/levelofdetalisation.h"
-#include "include/transformator.h"
 
+class QPainter;
+class Area;
+class TransformatorInterface;
+class LogicalMap;
+class HexagonalGrid;
+class LevelOfDetalisation;
 
 class GraphicalMap final
 {

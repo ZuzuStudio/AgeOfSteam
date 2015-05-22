@@ -7,7 +7,6 @@ class GraphicalMap;
 class FrameMemoisator;
 class WorldView;
 
-
 class MapWidget : public QWidget
 {
     Q_OBJECT

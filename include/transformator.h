@@ -2,7 +2,8 @@
 #define TRANSFORMATOR_H
 
 #include <QPointF>
-#include "include/area.h"
+
+class Area;
 
 class TransformatorInterface
 {

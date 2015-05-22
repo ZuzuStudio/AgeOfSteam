@@ -1,6 +1,7 @@
 #include "include/mapwidget.h"
 
 #include <QKeyEvent>
+#include <QPainter>
 
 #include "include/graphicalmap.h"
 #include "include/framememoisator.h"

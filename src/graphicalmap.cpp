@@ -1,5 +1,11 @@
 #include "include/graphicalmap.h"
+
 #include <QtSvg/QSvgRenderer>
+#include "include/area.h"
+#include "include/logicalmap.h"
+#include "include/hexagonalgrid.h"
+#include "include/levelofdetalisation.h"
+#include "include/transformator.h"
 
 #include <QDebug>
 

@@ -1,11 +1,12 @@
 #ifndef FRAMEMEMOISATOR
 #define FRAMEMEMOISATOR
 
-#include <QRect>
-
-#include "include/graphicalmap.h"
 #include "include/area.h"
-#include "include/worldview.h"
+
+class QPainter;
+class GraphicalMap;
+class WorldView;
+
 
 class FrameMemoisator final
 {

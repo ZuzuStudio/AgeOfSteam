@@ -1,4 +1,5 @@
 #include "include/transformator.h"
+#include "include/area.h"
 
 
 TransformatorInterface::~TransformatorInterface() {}

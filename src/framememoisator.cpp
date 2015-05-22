@@ -1,5 +1,10 @@
 #include "include/framememoisator.h"
 
+#include <QImage>
+#include <QPainter>
+#include "include/graphicalmap.h"
+#include "include/worldview.h"
+
 #include <QDebug>
 
 #define CONTROL

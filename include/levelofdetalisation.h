@@ -1,8 +1,9 @@
 #ifndef LEVELOFDETALISATION_H
 #define LEVELOFDETALISATION_H
 
-#include <vector>
-#include <QSvgRenderer>
+#include <QtGlobal>
+
+class QSvgRenderer;
 
 class LevelOfDetalisation
 {

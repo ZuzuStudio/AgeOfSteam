@@ -1,5 +1,6 @@
 #include "include/levelofdetalisation.h"
 #include <assert.h>
+#include <QSvgRenderer>
 
 using namespace std;
 
