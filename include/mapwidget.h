@@ -2,13 +2,10 @@
 #define MAPWIDGET_H
 
 #include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include <QKeyEvent>
-#include <vector>
-#include "include/graphicalmap.h"
-#include "include/worldview.h"
 
+class GraphicalMap;
+class FrameMemoisator;
+class WorldView;
 
 
 class MapWidget : public QWidget
@@ -25,11 +22,8 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     //bool event(QEvent *event);
 private:
-    GraphicalMap &model;
+    FrameMemoisator *memoisator;
     WorldView *worldView;
-    QImage *imageBufer;
-    int fringe;
-    QRectF fringedArea;
 };
 
 #endif // MAPWIDGET_H

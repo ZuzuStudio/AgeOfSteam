@@ -11,6 +11,7 @@ TODO: license here
 #include "../include/mapwidget.h"
 #include "../include/mainwindow.h"
 #include "../include/logicalmap.h"
+#include "include/graphicalmap.h"
 #include <QDebug>
 
 int main(int argc, char **argv)

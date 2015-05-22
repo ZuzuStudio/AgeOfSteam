@@ -28,7 +28,8 @@ SOURCES += \
     src/worldview.cpp \
     src/logicalmap.cpp \
     src/transformator.cpp \
-    src/graphicalmap.cpp
+    src/graphicalmap.cpp \
+    src/framememoisator.cpp
 
 HEADERS += \
     include/mainwindow.h \
@@ -40,7 +41,8 @@ HEADERS += \
     include/logicalmap.h \
     include/area.h \
     include/transformator.h \
-    include/graphicalmap.h
+    include/graphicalmap.h \
+    include/framememoisator.h
 
 RESOURCES += \
     res/res.qrc

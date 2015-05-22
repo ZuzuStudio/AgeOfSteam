@@ -1,81 +1,41 @@
 #include "../include/mapwidget.h"
 
-#include <QDebug>
+#include <QKeyEvent>
 
-#define CONTROL
-#include <algorithm>
-
+#include "include/graphicalmap.h"
+#include "include/framememoisator.h"
+#include "include/worldview.h"
 
 MapWidget::MapWidget(GraphicalMap &model, QWidget *parent) :
     QWidget(parent),
-    model(model),
-    worldView(nullptr),
-    imageBufer(nullptr),
-    fringe(200)
+    memoisator(nullptr),
+    worldView(nullptr)
 {
-    fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
-    fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
-
-    worldView = new WorldView(model.mapBorder(), Area(0, 0, this->size()), 1.0);
-
-    imageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
-
+    memoisator = new FrameMemoisator(model, Area(0, 0, size()));
+    worldView = new WorldView(model.mapBorder(), Area(0, 0, size()), 1.0);
     // NOTE maybe all controll and interaction place in other class
     //setAttribute(Qt::WA_AcceptTouchEvents);
 }
 
 MapWidget::~MapWidget()
 {
-    delete imageBufer;
-    imageBufer = nullptr;
+    delete memoisator;
+    memoisator = nullptr;
     delete worldView;
     worldView = nullptr;
 }
 
 void MapWidget::paintEvent(QPaintEvent *event)
 {
-    qDebug() << worldView->scale();
-    QPainter buferPainter(imageBufer);
-    buferPainter.setRenderHint(QPainter::SmoothPixmapTransform);
-    buferPainter.fillRect(0, 0, fringedArea.width(), fringedArea.height(), Qt::black);
-    buferPainter.translate(fringe, fringe);
-
-    qDebug() << "fringed:" << Area(fringedArea) << "bare:" << Area(0, 0, size());
-    qDebug() << "bare inMap:" <<
-             worldView->followingTransformator().transformToMapCordinates(Area(0, 0, size()));
-
-    model.drawArea(buferPainter, Area(fringedArea), worldView->followingTransformator());
-
-    QPainter mainPainter(this);
-#ifdef CONTROL
-    auto ims = imageBufer->size() + QSize(10, 10);
-    qreal tmpScale = std::min((qreal)width() / ims.width(), (qreal)height() / ims.height());
-    mainPainter.setTransform(QTransform(tmpScale, 0.0, 0.0, tmpScale, 5, 5));
-    mainPainter.drawImage(0, 0, *imageBufer);
-    mainPainter.translate(fringe, fringe);
-    mainPainter.setPen(Qt::red);
-    mainPainter.drawLine(0, 0, width(), 0);
-    mainPainter.drawLine(width(), 0, width(), height());
-    mainPainter.drawLine(width(), height(), 0, height());
-    mainPainter.drawLine(0, height(), 0, 0);
-#else
-    mainPainter.drawImage(-fringe, -fringe, *imageBufer);
-#endif
-
+    QPainter painter(this);
+    memoisator->drawFrame(painter, *worldView);
     Q_UNUSED(event);
 }
 
 void MapWidget::resizeEvent(QResizeEvent *event)
 {
-    fringedArea.setSize(size() + 2.0 * QSizeF(fringe, fringe));
-    fringedArea.moveCenter(QPointF(width() / 2.0, height() / 2.0));
-    auto newImageBufer  = new QImage(fringedArea.size().toSize(), QImage::Format_ARGB32_Premultiplied);
-    delete imageBufer;
-    imageBufer = newImageBufer;
-    newImageBufer = nullptr;
-
+    memoisator->resizeScreen(Area(0, 0, size()));
     worldView->setScreenParameter(Area(0, 0, size()));
-
     Q_UNUSED(event);
 }
 
