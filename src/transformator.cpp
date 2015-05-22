@@ -1,4 +1,4 @@
-#include "../include/transformator.h"
+#include "include/transformator.h"
 
 
 TransformatorInterface::~TransformatorInterface() {}

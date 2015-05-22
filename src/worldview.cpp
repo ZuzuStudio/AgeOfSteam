@@ -1,4 +1,4 @@
-#include "../include/worldview.h"
+#include "include/worldview.h"
 #include <algorithm>
 #include <QDebug>
 

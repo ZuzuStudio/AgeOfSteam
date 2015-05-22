@@ -1,4 +1,4 @@
-#include "../include/levelofdetalisation.h"
+#include "include/levelofdetalisation.h"
 #include <assert.h>
 
 using namespace std;

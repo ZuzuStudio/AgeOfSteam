@@ -4,7 +4,7 @@
 #include <QPointF>
 #include <QPoint>
 #include <QRectF>
-#include "../include/area.h"
+#include "include/area.h"
 
 class HexagonalGrid
 {

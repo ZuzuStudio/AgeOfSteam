@@ -1,4 +1,4 @@
-#include "../include/mapwidget.h"
+#include "include/mapwidget.h"
 
 #include <QKeyEvent>
 

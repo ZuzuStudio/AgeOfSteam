@@ -8,9 +8,9 @@ TODO: license here
 #include <QGLFormat>
 #endif
 
-#include "../include/mapwidget.h"
-#include "../include/mainwindow.h"
-#include "../include/logicalmap.h"
+#include "include/mapwidget.h"
+#include "include/mainwindow.h"
+#include "include/logicalmap.h"
 #include "include/graphicalmap.h"
 #include <QDebug>
 

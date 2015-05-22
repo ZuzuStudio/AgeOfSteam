@@ -1,4 +1,4 @@
-#include "../include/graphicalmap.h"
+#include "include/graphicalmap.h"
 #include <QtSvg/QSvgRenderer>
 
 #include <QDebug>

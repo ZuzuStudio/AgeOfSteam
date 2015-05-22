@@ -4,8 +4,8 @@
 #include <QPointF>
 #include <QRectF>
 #include <QDebug>
-#include "../include/area.h"
-#include "../include/transformator.h"
+#include "include/area.h"
+#include "include/transformator.h"
 
 class WorldView final
 {
