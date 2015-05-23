@@ -12,24 +12,24 @@ class WorldView;
 class FrameMemoisator final
 {
 public:
-    FrameMemoisator(GraphicalMap &model, const Area &screenGeometry);
+    FrameMemoisator(GraphicalMap &model, const WorldView &worldView);
     FrameMemoisator(const FrameMemoisator &original) = delete;
     FrameMemoisator &operator=(const FrameMemoisator &rhs) = delete;
     FrameMemoisator(FrameMemoisator &&victim) = default;
     FrameMemoisator &operator=(FrameMemoisator &&rhs) = default;
-    ~FrameMemoisator();
+    ~FrameMemoisator() = default;
 
-    void drawFrame(QPainter &painter, const WorldView &worldView);
-    void resizeScreen(const Area &screenGeometry);
+    void drawFrame(QPainter &painter);
+    void resizeScreen();
 
 private:
     GraphicalMap &model;
-    //QImage *imageBufer;
+    const WorldView &worldView;
     std::vector<Frame> frames;
     int fringe;
     Area fringedArea;
 
-    int firstTime;
+    void drawSelectedFrame(QPainter &painter, int selected);
 };
 
 #endif // FRAMEMEMOISATOR

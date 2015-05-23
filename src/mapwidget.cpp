@@ -9,11 +9,12 @@
 
 MapWidget::MapWidget(GraphicalMap &model, QWidget *parent) :
     QWidget(parent),
-    memoisator(nullptr),
-    worldView(nullptr)
+    worldView(nullptr),
+    memoisator(nullptr)
 {
-    memoisator = new FrameMemoisator(model, Area(0, 0, size()));
+
     worldView = new WorldView(model.mapBorder(), Area(0, 0, size()), 1.0);
+    memoisator = new FrameMemoisator(model, *worldView);
     // NOTE maybe all controll and interaction place in other class
     //setAttribute(Qt::WA_AcceptTouchEvents);
 }
@@ -29,14 +30,15 @@ MapWidget::~MapWidget()
 void MapWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    memoisator->drawFrame(painter, *worldView);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    memoisator->drawFrame(painter);
     Q_UNUSED(event);
 }
 
 void MapWidget::resizeEvent(QResizeEvent *event)
 {
-    memoisator->resizeScreen(Area(0, 0, size()));
     worldView->setScreenParameter(Area(0, 0, size()));
+    memoisator->resizeScreen();
     Q_UNUSED(event);
 }
 

@@ -21,8 +21,8 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     //bool event(QEvent *event);
 private:
-    FrameMemoisator *memoisator;
     WorldView *worldView;
+    FrameMemoisator *memoisator;    
 };
 
 #endif // MAPWIDGET_H

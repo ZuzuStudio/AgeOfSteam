@@ -19,6 +19,11 @@ public:
 
     void setScreenParameter(Area newScreenArea);
 
+    Area screenParameter() const
+    {
+        return screenArea;
+    }
+
     void moveScreen(QPointF screenShift);
 
     void moveScreen(qreal dx, qreal dy)
