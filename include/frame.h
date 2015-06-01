@@ -4,14 +4,46 @@
 #include <memory>
 #include <QImage>
 #include "include/transformator.h"
+#include "include/area.h"
 
-struct Frame
+class Frame final
 {
-    std::unique_ptr<TransformatorInterface> trator;
-    std::unique_ptr<QImage> image;
+public:
+    Frame(TransformatorInterface *trator, QImage *image, const Area inScreenArea):
+        tratorPrivate(trator), imagePrivate(image),
+        previousInMapArea(tratorPrivate->transformToMapCoordinates(inScreenArea))
+    {
+    }
 
-    Frame(TransformatorInterface *trator, QImage *image):
-        trator(trator), image(image) {}
+    const TransformatorInterface *trator()const
+    {
+        return tratorPrivate.get();
+    }
+
+    QImage *image()const
+    {
+        return imagePrivate.get();
+    }
+
+    void setImage(QImage *image)
+    {
+        imagePrivate.reset(image);
+    }
+
+    Area previousInScreenArea()const
+    {
+        return tratorPrivate->transformToScreenCoordinates(previousInMapArea);
+    }
+
+    void setPreviousArea(const Area &inScreenArea)
+    {
+        previousInMapArea = tratorPrivate->transformToMapCoordinates(inScreenArea);
+    }
+
+private:
+    std::unique_ptr<TransformatorInterface> tratorPrivate;
+    std::unique_ptr<QImage> imagePrivate;
+    Area previousInMapArea;
 };
 
 #endif // FRAME_H

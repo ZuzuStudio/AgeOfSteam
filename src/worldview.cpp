@@ -64,7 +64,7 @@ void WorldView::restoreCorrectness()
         scalePrivate = maximalScale;
 
     auto tr = followingTransformator();
-    auto inMapScreenArea = tr->transformToMapCordinates(screenArea);
+    auto inMapScreenArea = tr->transformToMapCoordinates(screenArea);
 
     auto overhead = inMapScreenArea.nw().x() - mapArea.nw().x();
 

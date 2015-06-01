@@ -44,11 +44,11 @@ GraphicalMap::~GraphicalMap()
 void GraphicalMap::drawArea(QPainter &painter, const Area &inScreenArea,
                             const TransformatorInterface *trator) const
 {
-    auto inMapArea = trator->transformToMapCordinates(inScreenArea);
+    auto inMapArea = trator->transformToMapCoordinates(inScreenArea);
     qDebug() << "inMap:" << inMapArea;
     qDebug() << "mapBorder" << grid->mapBorder();
     qDebug() << "nwMapBorder cell area" << grid->cellArea(0, 0);
-    qDebug() << "nwMapBorder cell area inScreen:" << trator->transformToScreenCordinates(grid->cellArea(0, 0));
+    qDebug() << "nwMapBorder cell area inScreen:" << trator->transformToScreenCoordinates(grid->cellArea(0, 0));
     auto nwIndex = grid->indices(inMapArea.nw(), QPointF(-1.0, -1.0)) - QPoint(1, 1);
     auto seIndex = grid->indices(inMapArea.se(), QPointF(+1.0, +1.0)) + QPoint(1, 1);
     auto diff = seIndex - nwIndex;
@@ -64,7 +64,7 @@ void GraphicalMap::drawArea(QPainter &painter, const Area &inScreenArea,
             ->renderer(trator->scale())
             ->render(&painter,
                      trator
-                     ->transformToScreenCordinates(grid->cellArea(column, row))
+                     ->transformToScreenCoordinates(grid->cellArea(column, row))
                      .adjust(0.5)
                      .toRectF());
         }

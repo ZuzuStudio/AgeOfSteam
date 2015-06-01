@@ -80,4 +80,10 @@ private:
     QPointF nwPrivate, sePrivate;
 };
 
+inline Area belowThis(const Area &area)
+{
+    return Area(area.nw().x(), area.se().y(),
+                area.se().x(), 2 * area.se().y() - area.nw().y());
+}
+
 #endif // AREA_H

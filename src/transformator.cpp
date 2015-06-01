@@ -6,28 +6,28 @@ TransformatorInterface::~TransformatorInterface() {}
 
 AbstractTransformator::~AbstractTransformator() {}
 
-QPointF AbstractTransformator::transformToScreenCordinates(const QPointF &point) const
+QPointF AbstractTransformator::transformToScreenCoordinates(const QPointF &point) const
 {
     return QPointF(screenViewCenter.x() + (point.x() - mapViewCenter.x()) * scalePrivate,
                    screenViewCenter.y() + (mapViewCenter.y() - point.y()) * scalePrivate);
 }
 
-QPointF AbstractTransformator::transformToMapCordinates(const QPointF &point) const
+QPointF AbstractTransformator::transformToMapCoordinates(const QPointF &point) const
 {
     return QPointF(mapViewCenter.x() + (point.x() - screenViewCenter.x()) / scalePrivate,
                    mapViewCenter.y() + (screenViewCenter.y() - point.y()) / scalePrivate);
 }
 
-Area AbstractTransformator::transformToScreenCordinates(const Area &area) const
+Area AbstractTransformator::transformToScreenCoordinates(const Area &area) const
 {
-    return Area(transformToScreenCordinates(area.nw()),
-                transformToScreenCordinates(area.se()));
+    return Area(transformToScreenCoordinates(area.nw()),
+                transformToScreenCoordinates(area.se()));
 }
 
-Area AbstractTransformator::transformToMapCordinates(const Area &area) const
+Area AbstractTransformator::transformToMapCoordinates(const Area &area) const
 {
-    return Area(transformToMapCordinates(area.nw()),
-                transformToMapCordinates(area.se()));
+    return Area(transformToMapCoordinates(area.nw()),
+                transformToMapCoordinates(area.se()));
 }
 
 

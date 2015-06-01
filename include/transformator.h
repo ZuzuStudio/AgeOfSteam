@@ -17,10 +17,10 @@ public:
     virtual ~TransformatorInterface() = 0;
 
     virtual qreal scale()const = 0;
-    virtual QPointF transformToScreenCordinates(const QPointF &point)const = 0;
-    virtual QPointF transformToMapCordinates(const QPointF &point)const = 0;
-    virtual Area transformToScreenCordinates(const Area &point)const = 0;
-    virtual Area transformToMapCordinates(const Area &point)const = 0;
+    virtual QPointF transformToScreenCoordinates(const QPointF &point)const = 0;
+    virtual QPointF transformToMapCoordinates(const QPointF &point)const = 0;
+    virtual Area transformToScreenCoordinates(const Area &point)const = 0;
+    virtual Area transformToMapCoordinates(const Area &point)const = 0;
 };
 
 class AbstractTransformator: public TransformatorInterface
@@ -46,10 +46,10 @@ public:
         return scalePrivate;
     }
 
-    QPointF transformToScreenCordinates(const QPointF &point)const override final;
-    QPointF transformToMapCordinates(const QPointF &point)const override final;
-    Area transformToScreenCordinates(const Area &area)const override final;
-    Area transformToMapCordinates(const Area &area)const override final;
+    QPointF transformToScreenCoordinates(const QPointF &point)const override final;
+    QPointF transformToMapCoordinates(const QPointF &point)const override final;
+    Area transformToScreenCoordinates(const Area &area)const override final;
+    Area transformToMapCoordinates(const Area &area)const override final;
 
 private:
     const QPointF &mapViewCenter, &screenViewCenter;
